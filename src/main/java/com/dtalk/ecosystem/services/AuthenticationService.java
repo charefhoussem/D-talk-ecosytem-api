@@ -1,0 +1,11 @@
+package com.dtalk.ecosystem.services;
+
+import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
+import com.dtalk.ecosystem.DTOs.request.SigninRequest;
+import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
+
+public interface AuthenticationService {
+    JwtAuthenticationResponse signup(SignUpRequest request);
+
+    JwtAuthenticationResponse signin(SigninRequest request);
+}
