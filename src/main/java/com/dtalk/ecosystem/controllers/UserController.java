@@ -9,24 +9,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/UserApi")
+@RequestMapping("/v1/UserApi")
 @RequiredArgsConstructor
 public class UserController {
     private  final UserService userService;
    // @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/getuser/{id}")
+    @GetMapping("/v1/getuser/{id}")
     public User retrieveUser(@PathVariable("id") Long idUser) {
         User user = userService.getUserById(idUser);
         return user;
     }
     //@PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/get-users-role/{role}")
+    @GetMapping("/v1/get-users-role/{role}")
     public List<User> retrieveUserByRole(@PathVariable("role") String r) {
         List<User> users = userService.retrieveAllUserByRole(r);
         return users;
     }
     //@PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/addUser")
+    @PostMapping("/v1/addUser")
     public User adduser(@RequestBody User u){
         User user = userService.addUser(u);
         return  user;
