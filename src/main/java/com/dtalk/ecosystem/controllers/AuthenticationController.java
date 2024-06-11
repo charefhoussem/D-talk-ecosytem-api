@@ -3,6 +3,7 @@ package com.dtalk.ecosystem.controllers;
 import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
 import com.dtalk.ecosystem.DTOs.request.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
+import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.response.ResponseHandler;
 import com.dtalk.ecosystem.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<JwtAuthenticationResponse> signup(@RequestBody SignUpRequest request) {
+    public ResponseEntity<User> signup(@RequestBody SignUpRequest request) {
         return ResponseEntity.ok(authenticationService.signup(request));
     }
 

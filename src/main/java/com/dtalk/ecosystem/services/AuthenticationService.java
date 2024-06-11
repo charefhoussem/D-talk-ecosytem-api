@@ -3,9 +3,10 @@ package com.dtalk.ecosystem.services;
 import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
 import com.dtalk.ecosystem.DTOs.request.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
+import com.dtalk.ecosystem.entities.User;
 
 public interface AuthenticationService {
-    JwtAuthenticationResponse signup(SignUpRequest request);
+    User signup(SignUpRequest request);
 
     JwtAuthenticationResponse signin(SigninRequest request);
 
