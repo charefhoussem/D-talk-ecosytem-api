@@ -7,6 +7,7 @@ import com.dtalk.ecosystem.entities.Role;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.AuthenticationService;
+import com.dtalk.ecosystem.services.EmailService;
 import com.dtalk.ecosystem.services.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     @Override
     public JwtAuthenticationResponse signup(SignUpRequest request) {
@@ -28,8 +30,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.valueOf(request.getRole())).build();
         userRepository.save(user);
+        emailService.confirmationSignup(user.getEmail(),"Confirmation signup","confirmation");
         var jwt = jwtService.generateToken(user);
-        return JwtAuthenticationResponse.builder().token(jwt).build();    }
+        return JwtAuthenticationResponse.builder().token(jwt).build();
+
+    }
 
     @Override
     public JwtAuthenticationResponse signin(SigninRequest request) {
