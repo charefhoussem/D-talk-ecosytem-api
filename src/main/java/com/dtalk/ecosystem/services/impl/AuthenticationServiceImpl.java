@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var user = User.builder().name(request.getName()).lastname(request.getLastname())
                 .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).build();
+                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).build();
         userRepository.save(user);
         emailService.confirmationSignup(user.getEmail(),"Verification ",codeVerification);
         var jwt = jwtService.generateToken(user);
@@ -72,5 +72,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             userRepository.save(user);
             return true;
         }
+    }
+
+    @Override
+    public JwtAuthenticationResponse enableUser(Long idUser) {
+        User user = userRepository.findById(idUser).get();
+            user.setEnable(true);
+            userRepository.save(user);
+
+        var jwt = jwtService.generateToken(user);
+        return JwtAuthenticationResponse.builder().token(jwt).build();
+
+
+    }
+
+    @Override
+    public JwtAuthenticationResponse disableUser(Long idUser) {
+
+        User user = userRepository.findById(idUser).get();
+            user.setEnable(false);
+            userRepository.save(user);
+        return JwtAuthenticationResponse.builder().token(null).build();
+
     }
 }

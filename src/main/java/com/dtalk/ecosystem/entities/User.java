@@ -36,6 +36,8 @@ public class User implements  UserDetails {
 
     private String codeVerification;
 
+    private Boolean enable;
+
 
 
     @Override

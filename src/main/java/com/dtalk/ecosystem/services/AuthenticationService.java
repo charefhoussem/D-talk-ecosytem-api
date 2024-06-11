@@ -11,4 +11,9 @@ public interface AuthenticationService {
 
     public Boolean verifCode(String code);
 
+    public  JwtAuthenticationResponse enableUser(Long idUser);
+
+    public JwtAuthenticationResponse disableUser(Long idUser);
+
+
 }

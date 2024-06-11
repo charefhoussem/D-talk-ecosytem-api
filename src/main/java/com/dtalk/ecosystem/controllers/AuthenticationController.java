@@ -37,4 +37,19 @@ public class AuthenticationController {
     }
 
 
+    @PutMapping("/enable/{id}")
+    public ResponseEntity<JwtAuthenticationResponse> enableUser(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(authenticationService.enableUser(id));
+    }
+
+
+
+
+    @PutMapping ("/disable/{id}")
+    public ResponseEntity<JwtAuthenticationResponse> disableUser(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(authenticationService.disableUser(id));
+
+    }
+
+
 }
