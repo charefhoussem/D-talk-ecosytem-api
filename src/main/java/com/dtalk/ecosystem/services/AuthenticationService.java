@@ -8,4 +8,7 @@ public interface AuthenticationService {
     JwtAuthenticationResponse signup(SignUpRequest request);
 
     JwtAuthenticationResponse signin(SigninRequest request);
+
+    public Boolean verifCode(String code);
+
 }

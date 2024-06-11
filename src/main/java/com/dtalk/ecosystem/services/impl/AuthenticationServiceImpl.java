@@ -61,4 +61,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
+
+    @Override
+    public Boolean verifCode(String code) {
+        User user = userRepository.findByVerificationCode(code);
+        if (user == null) {
+            return false;
+        } else {
+            user.setCodeVerification(null);
+            userRepository.save(user);
+            return true;
+        }
+    }
 }
