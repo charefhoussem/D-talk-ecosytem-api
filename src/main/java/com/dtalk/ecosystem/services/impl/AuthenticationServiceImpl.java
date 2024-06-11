@@ -26,11 +26,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     @Override
     public JwtAuthenticationResponse signup(SignUpRequest request) {
+        String codeVerification = VerificationCodeGenerateService.generateCode();
+
         var user = User.builder().name(request.getName()).lastname(request.getLastname())
                 .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.valueOf(request.getRole())).build();
+                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).build();
         userRepository.save(user);
-        emailService.confirmationSignup(user.getEmail(),"Confirmation signup","confirmation");
+        emailService.confirmationSignup(user.getEmail(),"Verification ",codeVerification);
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
 
