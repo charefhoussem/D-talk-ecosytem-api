@@ -37,6 +37,8 @@ public class User implements  UserDetails {
     private String codeVerification;
 
     private Boolean enable;
+    private Boolean locked;
+
 
 
 
@@ -57,7 +59,7 @@ public class User implements  UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return locked;
     }
 
     @Override

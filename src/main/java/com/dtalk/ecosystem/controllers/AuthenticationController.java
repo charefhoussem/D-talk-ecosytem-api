@@ -2,6 +2,7 @@ package com.dtalk.ecosystem.controllers;
 
 import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
 import com.dtalk.ecosystem.DTOs.request.SigninRequest;
+import com.dtalk.ecosystem.DTOs.request.VerifCodeRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.response.ResponseHandler;
@@ -28,12 +29,17 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.signin(request));
     }
 
-    @GetMapping("/verification-code")
-    public ResponseEntity<Object> verifyUser(@RequestBody String code) {
+    @PutMapping("/verification-code")
+    public ResponseEntity<Object> verifyUser(@RequestBody VerifCodeRequest verif_c) {
+        String code = verif_c.getCode();
+        if (code == null || code.isEmpty()) {
+            return ResponseHandler.responseBuilder("Verification code is missing", HttpStatus.BAD_REQUEST, null);
+
+        }
         if (authenticationService.verifCode(code)) {
-            return ResponseHandler.responseBuilder("verify_success", HttpStatus.OK, null);
+            return ResponseHandler.responseBuilder("User verified successfully", HttpStatus.OK, null);
         } else {
-            return ResponseHandler.responseBuilder("unable to verify please try again", HttpStatus.INTERNAL_SERVER_ERROR, null);
+            return ResponseHandler.responseBuilder("Invalid verification code", HttpStatus.BAD_REQUEST, null);
         }
     }
 

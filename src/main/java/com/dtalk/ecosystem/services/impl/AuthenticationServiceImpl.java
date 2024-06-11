@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var user = User.builder().name(request.getName()).lastname(request.getLastname())
                 .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).build();
+                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).locked(false).build();
 
         userRepository.save(user);
         emailService.confirmationSignup(user.getEmail(),"Verification ",codeVerification);
@@ -65,13 +65,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Boolean verifCode(String code) {
         User user = userRepository.findByVerificationCode(code);
-        if (user == null) {
-            return false;
-        } else {
-            user.setCodeVerification(null);
+        if (user != null && !user.getLocked()) {
+            user.setLocked(true);
+            user.setCodeVerification(null); // Réinitialise le code de vérification après approbation
             userRepository.save(user);
             return true;
         }
+        return false;
+
     }
 
     @Override
