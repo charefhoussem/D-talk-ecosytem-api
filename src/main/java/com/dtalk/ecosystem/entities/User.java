@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +40,9 @@ public class User implements  UserDetails {
     private Boolean enable;
     private Boolean locked;
 
-
+   // for reset_password
+    private String resetPasswordToken;
+    private LocalDateTime tokenExpirationTime;
 
 
     @Override

@@ -16,5 +16,9 @@ public interface AuthenticationService {
 
     public JwtAuthenticationResponse disableUser(Long idUser);
 
+    public void initiatePasswordReset(String email);
+    public boolean validatePasswordResetToken(String token);
+    public void resetPassword(String token, String newPassword);
+
 
 }

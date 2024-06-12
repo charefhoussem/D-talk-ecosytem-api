@@ -18,4 +18,13 @@ public class EmailServiceImpl implements EmailService {
         message.setText(text);
         mailSender.send(message);
     }
+
+    @Override
+    public void resetPassword(String to, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Reset Password");
+        message.setText(text);
+        mailSender.send(message);
+    }
 }

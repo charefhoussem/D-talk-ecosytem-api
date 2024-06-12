@@ -12,8 +12,12 @@ import com.dtalk.ecosystem.services.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -41,23 +45,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse signin(SigninRequest request) {
         try {
-            System.out.println("Attempting to authenticate user with email: " + request.getEmail());
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
             System.out.println("Authentication successful.");
         } catch (Exception e) {
-            System.err.println("Authentication failed for email: " + request.getEmail());
             throw new IllegalArgumentException("Invalid email or password.");
         }
 
-        System.out.println("Searching for user with email: " + request.getEmail());
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-        System.out.println("User found: " + user.getEmail());
 
-        System.out.println("Generating JWT token for user: " + user.getEmail());
         var jwt = jwtService.generateToken(user);
-        System.out.println("JWT token generated: " + jwt);
 
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
@@ -96,4 +94,43 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return JwtAuthenticationResponse.builder().token(null).build();
 
     }
+
+    @Override
+    public void initiatePasswordReset(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        String token = UUID.randomUUID().toString();
+        user.setResetPasswordToken(token);
+        user.setTokenExpirationTime(LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
+        String resetLink = "http://localhost:8089/v1/api/auth/reset_password?token=" + token;
+        emailService.resetPassword(user.getEmail(), resetLink);
+    }
+
+    @Override
+    public boolean validatePasswordResetToken(String token) {
+        User user = userRepository.findByResetPasswordToken(token).orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+        if (user == null || user.getTokenExpirationTime().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+        return true;    }
+
+    @Override
+    public void resetPassword(String token, String newPassword) {
+        User user = userRepository.findByResetPasswordToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+
+        if (user.getTokenExpirationTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Token has expired");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetPasswordToken(null);
+        user.setTokenExpirationTime(null);
+        userRepository.save(user);
+    }
+
+
 }

@@ -11,4 +11,5 @@ public interface UserService {
     public List<User> retrieveAllUserByRole(String role);
     public User addUser(User user);
 
+
 }
