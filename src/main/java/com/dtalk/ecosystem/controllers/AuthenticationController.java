@@ -62,33 +62,39 @@ public class AuthenticationController {
 
 
     @PostMapping("/forgot_password")
-    public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Object> forgotPassword(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
         authenticationService.initiatePasswordReset(email);
-        return ResponseEntity.ok("Password reset link sent");
+        return ResponseHandler.responseBuilder("Password reset link sent", HttpStatus.OK, null);
+
     }
 
 
     @GetMapping("/reset_password")
-    public ResponseEntity<String> validateToken(@RequestParam("token") String token) {
+    public ResponseEntity<Object> validateToken(@RequestParam("token") String token) {
         boolean isValid = authenticationService.validatePasswordResetToken(token);
         if (isValid) {
-            return ResponseEntity.ok("Token is valid");
+            return ResponseHandler.responseBuilder("Token is valid", HttpStatus.OK, null);
+
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token");
+            return ResponseHandler.responseBuilder("Invalid or expired token", HttpStatus.BAD_REQUEST, null);
+
         }
     }
 
 
     @PutMapping("/reset_password")
-    public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Object> resetPassword(@RequestBody Map<String, String> payload) {
         String token = payload.get("token");
         String newPassword = payload.get("newPassword");
         try {
             authenticationService.resetPassword(token, newPassword);
-            return ResponseEntity.ok("Password reset successfully");
+            return ResponseHandler.responseBuilder("Password reset successfully", HttpStatus.OK, null);
+
+
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+
         }
     }
 
