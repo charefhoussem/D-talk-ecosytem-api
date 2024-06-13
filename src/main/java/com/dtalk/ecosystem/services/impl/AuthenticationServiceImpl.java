@@ -37,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).locked(false).build();
 
         userRepository.save(user);
-        emailService.confirmationSignup(user.getEmail(),"Verification ",codeVerification);
+        emailService.confirmationSignup(user.getEmail(),"Code Verification",codeVerification);
         return user;
 
     }
