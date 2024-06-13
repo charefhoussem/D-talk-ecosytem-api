@@ -5,6 +5,8 @@ import com.dtalk.ecosystem.DTOs.request.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
 import com.dtalk.ecosystem.entities.Role;
 import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.exceptions.ResourceInvalidException;
+import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.AuthenticationService;
 import com.dtalk.ecosystem.services.EmailService;
@@ -47,13 +49,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            System.out.println("Authentication successful.");
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid email or password.");
         }
 
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + request.getEmail()));
+
 
         var jwt = jwtService.generateToken(user);
 
@@ -111,19 +113,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public boolean validatePasswordResetToken(String token) {
-        User user = userRepository.findByResetPasswordToken(token).orElseThrow(() -> new IllegalArgumentException("Invalid token"));
-        if (user == null || user.getTokenExpirationTime().isBefore(LocalDateTime.now())) {
-            return false;
+        User user = userRepository.findByResetPasswordToken(token).orElseThrow(() -> new ResourceInvalidException("Invalid token"));
+        if (user.getTokenExpirationTime().isBefore(LocalDateTime.now())) {
+            throw new ResourceInvalidException("Token has expired");
         }
-        return true;    }
+        return true;
+    }
 
     @Override
     public void resetPassword(String token, String newPassword) {
         User user = userRepository.findByResetPasswordToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+                .orElseThrow(() -> new ResourceInvalidException("Invalid token"));
 
         if (user.getTokenExpirationTime().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Token has expired");
+            throw new ResourceInvalidException("Token has expired");
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
