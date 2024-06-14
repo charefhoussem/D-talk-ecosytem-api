@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -18,7 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+
 @Table(name = "users")
 
 public class User implements  UserDetails {
@@ -43,6 +44,9 @@ public class User implements  UserDetails {
    // for reset_password
     private String resetPasswordToken;
     private LocalDateTime tokenExpirationTime;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
+    private Set<Design> designs;
 
 
     @Override
