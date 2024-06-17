@@ -16,7 +16,6 @@ public class ResponseHandler {
         response.put("data", responseObject);
         response.put("httpStatus", httpStatus);
         response.put("message", message);
-        response.put("status", "success");
 
 
         return new ResponseEntity<>(response, httpStatus);

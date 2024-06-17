@@ -28,8 +28,26 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/signin","/auth/signup","/auth/verification-code","/auth/enable/**","/auth/disable/**","/auth/forgot_password","/auth/reset_password",
-                                "/user/**","/user/get-users-role/**","/user/addUser/**")
+                .authorizeHttpRequests(request -> request.requestMatchers("/auth/signin",
+                                "/auth/signup",
+                                "/auth/verification-code",
+                                "/auth/enable/**",
+                                "/auth/disable/**",
+                                "/auth/forgot_password",
+                                "/auth/reset_password",
+                                "/design/add/**",
+                                "/design/getById/**",
+                                "/design/",
+                                "/design/accept/**",
+                                "/design/disaccept/**",
+                                "/design/publish/**",
+                                "/design/unpublish/**",
+                                "/design/accepted-published",
+                                "/design/by-user/**",
+
+                                "/user/**",
+                                "/user/get-users-role/**",
+                                "/user/addUser/**")
                         .permitAll())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

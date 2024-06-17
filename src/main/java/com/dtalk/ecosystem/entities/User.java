@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,6 +47,7 @@ public class User implements  UserDetails {
     private LocalDateTime tokenExpirationTime;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
+    @JsonIgnore
     private Set<Design> designs;
 
 
