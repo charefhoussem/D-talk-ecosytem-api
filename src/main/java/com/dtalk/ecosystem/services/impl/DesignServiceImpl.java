@@ -125,7 +125,7 @@ public class DesignServiceImpl implements DesignService {
     }
 
     @Override
-    public Design modifyDesign(Long id, String name, double price, String description, MultipartFile imageFile, MultipartFile originFile) throws IOException {
+    public Design modifyDesign(Long id, String name, double price, String description) throws IOException {
         Optional<Design> designOptional = designRepository.findById(id);
 
         if (designOptional.isPresent()) {
@@ -134,20 +134,18 @@ public class DesignServiceImpl implements DesignService {
             design.setName(name);
             design.setPrice(price);
 
-            if (!imageFile.isEmpty()) {
-                String imageFileName = saveFile(imageFile);
-                design.setImagePath(imageFileName);
-            }
-
-            if (!originFile.isEmpty()) {
-                String originFileName = saveFile(originFile);
-                design.setOriginFilePath(originFileName);
-            }
-
-
             return designRepository.save(design);
         } else {
             throw new ResourceNotFoundException("Design not found");
+        }
+    }
+
+
+    @Override
+    public void deleteDesign(Long idDesign) {
+        Optional<Design> design = designRepository.findById(idDesign);
+        if(design.isPresent()) {
+            designRepository.deleteById(idDesign);
         }
     }
 

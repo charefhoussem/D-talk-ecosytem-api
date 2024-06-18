@@ -44,7 +44,8 @@ public class SecurityConfiguration {
                                 "/design/unpublish/**",
                                 "/design/accepted-published",
                                 "/design/by-user/**",
-
+                                "/design/delete/**",
+                                "/design/modify/**",
                                 "/user/**",
                                 "/user/get-users-role/**",
                                 "/user/addUser/**")

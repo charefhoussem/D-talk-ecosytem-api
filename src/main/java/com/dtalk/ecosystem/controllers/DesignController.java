@@ -71,18 +71,16 @@ public class DesignController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/modify/{id}")
     public ResponseEntity<Design> updateDesign(
             @PathVariable Long id,
             @RequestParam("description") String description,
-            @RequestParam("imageFile") MultipartFile imageFile,
-            @RequestParam("originFile") MultipartFile originFile,
             @RequestParam("name") String name,
             @RequestParam("price") double price
             ) {
 
         try {
-            Design updatedDesign = designService.modifyDesign(id,name,price,description,imageFile,originFile);
+            Design updatedDesign = designService.modifyDesign(id,name,price,description);
             return ResponseEntity.ok(updatedDesign);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -133,6 +131,13 @@ public class DesignController {
             return    ResponseHandler.responseBuilder("design not found",HttpStatus.NOT_FOUND,null);
 
         }
+    }
+@DeleteMapping("/delete/{idDesign}")
+    public ResponseEntity<Object> deleteDesign(@PathVariable("idDesign") Long id){
+        designService.deleteDesign(id);
+        return ResponseHandler.responseBuilder("design deleted",HttpStatus.OK,null);
+
+
     }
 
 }
