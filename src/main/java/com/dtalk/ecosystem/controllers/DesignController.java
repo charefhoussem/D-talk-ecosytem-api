@@ -27,7 +27,7 @@ public class DesignController {
     }
 
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/{id}")
     public Design getDesignById(@PathVariable Long id) {
         Design design = designService.getDesignById(id);
         return design;
@@ -41,7 +41,7 @@ public class DesignController {
         return designs;
 
     }
-    @GetMapping("/by-user/{idDesigner}")
+    @GetMapping("/user/{idDesigner}")
 
     public List<Design> getAllDesignByUser(@PathVariable("idDesigner") Long id){
         List<Design> designs = designService.retrieveAllDesginByUser(id);

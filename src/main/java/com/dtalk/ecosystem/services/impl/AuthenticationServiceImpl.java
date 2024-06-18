@@ -45,18 +45,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public JwtAuthenticationResponse signin(SigninRequest request) {
-        try {
+    public JwtAuthenticationResponse signin(SigninRequest request) throws IllegalArgumentException  {
+
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid email or password.");
-        }
+
+
 
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + request.getEmail()));
 
-
+System.out.println("passssssseeeeeeeeeeeeeeeeeeeeeeeeee");
         var jwt = jwtService.generateToken(user);
 
         return JwtAuthenticationResponse.builder().token(jwt).build();

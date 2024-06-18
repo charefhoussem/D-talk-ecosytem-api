@@ -20,13 +20,13 @@ public class UserController {
         return user;
     }
     //@PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/get-users-role/{role}")
+    @GetMapping("/role/{role}")
     public List<User> retrieveUserByRole(@PathVariable("role") String r) {
         List<User> users = userService.retrieveAllUserByRole(r);
         return users;
     }
     //@PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/addUser")
+    @PostMapping("/add")
     public User adduser(@RequestBody User u){
         User user = userService.addUser(u);
         return  user;

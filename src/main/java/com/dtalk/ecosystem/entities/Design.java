@@ -37,7 +37,6 @@ public class Design {
     private User user;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
     private Set<Tag> tags;
 
 }
