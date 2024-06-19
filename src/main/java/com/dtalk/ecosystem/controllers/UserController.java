@@ -13,19 +13,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private  final UserService userService;
-   // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public User retrieveUser(@PathVariable("id") Long idUser) {
         User user = userService.getUserById(idUser);
         return user;
     }
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/role/{role}")
     public List<User> retrieveUserByRole(@PathVariable("role") String r) {
         List<User> users = userService.retrieveAllUserByRole(r);
         return users;
     }
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public User adduser(@RequestBody User u){
         User user = userService.addUser(u);

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,12 +21,13 @@ import java.util.Optional;
 
 public class DesignController {
     private final DesignService designService;
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/")
     public List<Design> getAllDesigns() {
         return designService.retrieveAllDesgins();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
 
     @GetMapping("/{id}")
     public Design getDesignById(@PathVariable Long id) {
@@ -41,6 +43,8 @@ public class DesignController {
         return designs;
 
     }
+    @PreAuthorize("hasRole('DESIGNER')")
+
     @GetMapping("/user/{idDesigner}")
 
     public List<Design> getAllDesignByUser(@PathVariable("idDesigner") Long id){
@@ -48,6 +52,7 @@ public class DesignController {
         return designs;
 
     }
+    @PreAuthorize("hasRole('DESIGNER')")
 
     @PostMapping("/add/{idDesigner}")
     public ResponseEntity<Object> createDesign(
@@ -70,6 +75,7 @@ public class DesignController {
         }
     }
 
+    @PreAuthorize("hasRole('DESIGNER')")
 
     @PutMapping("/modify/{id}")
     public ResponseEntity<Design> updateDesign(
@@ -79,15 +85,12 @@ public class DesignController {
             @RequestParam("price") double price
             ) {
 
-        try {
+
             Design updatedDesign = designService.modifyDesign(id,name,price,description);
             return ResponseEntity.ok(updatedDesign);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+
     }
+    @PreAuthorize("hasRole('ADMIN')")
 
     @PutMapping("/accept/{id}")
     public ResponseEntity<Object> acceptDesign(@PathVariable("id") Long id){
@@ -98,6 +101,7 @@ public class DesignController {
          return    ResponseHandler.responseBuilder("design not found",HttpStatus.NOT_FOUND,null);
         }
     }
+    @PreAuthorize("hasRole('ADMIN')")
 
     @PutMapping("/disaccept/{id}")
     public ResponseEntity<Object> disacceptDesign(@PathVariable("id") Long id){
@@ -108,6 +112,7 @@ public class DesignController {
             return    ResponseHandler.responseBuilder("design not found",HttpStatus.NOT_FOUND,null);
         }
     }
+    @PreAuthorize("hasRole('DESIGNER')")
 
     @PutMapping("/publish/{idDesign}")
     public ResponseEntity<Object>  publichDesign(@PathVariable("idDesign") Long id){
@@ -120,6 +125,7 @@ public class DesignController {
 
         }
     }
+    @PreAuthorize("hasRole('DESIGNER')")
 
     @PutMapping("/unpublish/{idDesign}")
     public ResponseEntity<Object>  unpublichDesign(@PathVariable("idDesign") Long id){
@@ -132,7 +138,10 @@ public class DesignController {
 
         }
     }
-@DeleteMapping("/delete/{idDesign}")
+
+    @PreAuthorize("hasRole('DESIGNER')")
+
+    @DeleteMapping("/delete/{idDesign}")
     public ResponseEntity<Object> deleteDesign(@PathVariable("idDesign") Long id){
         designService.deleteDesign(id);
         return ResponseHandler.responseBuilder("design deleted",HttpStatus.OK,null);

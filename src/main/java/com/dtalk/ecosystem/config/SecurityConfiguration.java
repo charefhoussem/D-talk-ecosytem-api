@@ -31,25 +31,26 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request.requestMatchers("/auth/signin",
                                 "/auth/signup",
                                 "/auth/verification-code",
-                                "/auth/enable/**",
-                                "/auth/disable/**",
+                              //  "/auth/enable/**",
+                              //  "/auth/disable/**",
                                 "/auth/forgot_password",
-                                "/auth/reset_password",
-                                "/design/add/**",
-                                "/design/**",
-                                "/design/",
-                                "/design/accept/**",
-                                "/design/disaccept/**",
-                                "/design/publish/**",
-                                "/design/unpublish/**",
-                                "/design/accepted-published",
-                                "/design/user/**",
-                                "/design/delete/**",
-                                "/design/modify/**",
-                                "/user/**",
-                                "/user/get-users-role/**",
-                                "/user/addUser/**")
-                        .permitAll())
+                                "/auth/reset_password"
+                            //    "/design/add/**",
+                            //    "/design/**",
+                             //   "/design/",
+                             //   "/design/accept/**",
+                             //   "/design/disaccept/**",
+                             ///   "/design/publish/**",
+                             //   "/design/unpublish/**",
+                             //   "/design/accepted-published",
+                             ///   "/design/user/**",
+                             //   "/design/delete/**",
+                             //   "/design/modify/**",
+                             //   "/user/**",
+                             //   "/user/get-users-role/**",
+                               // "/user/addUser/**"
+                                        )
+                        .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
