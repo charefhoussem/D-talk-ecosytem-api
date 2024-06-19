@@ -82,9 +82,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public JwtAuthenticationResponse enableUser(Long idUser) {
-        User user = userRepository.findById(idUser).get();
-            user.setEnable(true);
-            userRepository.save(user);
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + idUser));
+        user.setEnable(true);
+        userRepository.save(user);
 
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
@@ -95,9 +96,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public JwtAuthenticationResponse disableUser(Long idUser) {
 
-        User user = userRepository.findById(idUser).get();
-            user.setEnable(false);
-            userRepository.save(user);
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + idUser));
+        user.setEnable(false);
+        userRepository.save(user);
         return JwtAuthenticationResponse.builder().token(null).build();
 
     }
