@@ -31,8 +31,8 @@ public class DesignServiceImpl implements DesignService {
 
     @Override
     public Design getDesignById(Long idDesign) {
-        return designRepository.findById(idDesign).get();
-    }
+        return designRepository.findById(idDesign)
+                .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));    }
 
     @Override
     public List<Design> retrieveAllDesgins() {
@@ -46,12 +46,9 @@ public class DesignServiceImpl implements DesignService {
 
      @Override
      public List<Design> retrieveAllDesginByUser(Long idUser) {
-         Optional<User> userOptional = userRepository.findById(idUser);
-         if (userOptional.isPresent()) {
-             User user = userOptional.get();
-             return designRepository.findDesignsByUserEquals(user);
-         }
-         return Collections.emptyList(); // return an empty list if user not found
+         User user = userRepository.findById(idUser)
+                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idUser));
+         return designRepository.findDesignsByUserEquals(user);
     }
 
 
@@ -78,75 +75,57 @@ public class DesignServiceImpl implements DesignService {
 
     @Override
     public Boolean acceptDesign(Long idDesign) {
-        Optional<Design> design = designRepository.findById(idDesign);
-        if (design.isPresent()){
-            Design d = design.get();
-            d.setIsAccepted(true);
-            designRepository.save(d);
-            return true;
-        }
-        return false;
+        Design design = designRepository.findById(idDesign)
+            .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
+        design.setIsAccepted(true);
+        designRepository.save(design);
+        return true;
     }
 
     @Override
     public Boolean disacceptDesign(Long idDesign) {
-        Optional<Design> design = designRepository.findById(idDesign);
-        if (design.isPresent()){
-            Design d = design.get();
-            d.setIsAccepted(false);
-            designRepository.save(d);
-            return true;
-        }
-        return false;
+        Design design = designRepository.findById(idDesign)
+                .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
+        design.setIsAccepted(false);
+        designRepository.save(design);
+        return true;
     }
 
     @Override
     public Boolean publishDesign(Long idDesign) {
-        Optional<Design> optionalDesign = designRepository.findById(idDesign);
-        if (optionalDesign.isPresent()) {
-            Design design = optionalDesign.get();
-            design.setIsPublished(true);
-            designRepository.save(design);
-            return true;
-        }
-        return false;
+        Design design = designRepository.findById(idDesign)
+                .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
+        design.setIsPublished(true);
+        designRepository.save(design);
+        return true;
     }
 
     @Override
     public Boolean unpublishDesign(Long idDesign) {
-        Optional<Design> optionalDesign = designRepository.findById(idDesign);
-        if (optionalDesign.isPresent()) {
-            Design design = optionalDesign.get();
-            design.setIsPublished(false);
-            designRepository.save(design);
-            return true;
-        }
-        return false;
+        Design design = designRepository.findById(idDesign)
+                .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
+        design.setIsPublished(false);
+        designRepository.save(design);
+        return true;
     }
 
     @Override
     public Design modifyDesign(Long id, String name, double price, String description) {
-        Optional<Design> designOptional = designRepository.findById(id);
-
-        if (designOptional.isPresent()) {
-            Design design = designOptional.get();
-            design.setDescription(description);
-            design.setName(name);
-            design.setPrice(price);
-
-            return designRepository.save(design);
-        } else {
-            throw new ResourceNotFoundException("Design not found");
-        }
+        Design design = designRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + id));
+        design.setDescription(description);
+        design.setName(name);
+        design.setPrice(price);
+        return designRepository.save(design);
     }
+
 
 
     @Override
     public void deleteDesign(Long idDesign) {
-        Optional<Design> design = designRepository.findById(idDesign);
-        if(design.isPresent()) {
+        Design design = designRepository.findById(idDesign).orElseThrow(()->new ResourceNotFoundException("Design not found with id: " + idDesign));
             designRepository.deleteById(idDesign);
-        }
+
     }
 
 
