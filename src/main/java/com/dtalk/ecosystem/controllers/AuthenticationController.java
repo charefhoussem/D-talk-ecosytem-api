@@ -73,13 +73,7 @@ public class AuthenticationController {
     @GetMapping("/reset_password")
     public ResponseEntity<Object> validateToken(@RequestParam("token") String token) {
         boolean isValid = authenticationService.validatePasswordResetToken(token);
-        if (isValid) {
-            return ResponseHandler.responseBuilder("Token is valid", HttpStatus.OK, null);
-
-        } else {
-            return ResponseHandler.responseBuilder("Invalid or expired token", HttpStatus.BAD_REQUEST, null);
-
-        }
+        return ResponseHandler.responseBuilder("Token is valid", HttpStatus.OK, null);
     }
 
 

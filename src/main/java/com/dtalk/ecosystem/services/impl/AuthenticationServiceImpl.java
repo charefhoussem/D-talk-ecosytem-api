@@ -7,6 +7,7 @@ import com.dtalk.ecosystem.entities.Role;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.exceptions.ResourceInvalidException;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
+import com.dtalk.ecosystem.exceptions.TokenExpiredException;
 import com.dtalk.ecosystem.exceptions.UserAlreadyExistsException;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.AuthenticationService;
@@ -120,9 +121,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public boolean validatePasswordResetToken(String token) {
-        User user = userRepository.findByResetPasswordToken(token).orElseThrow(() -> new ResourceInvalidException("Invalid token"));
+        User user = userRepository.findByResetPasswordToken(token)
+                .orElseThrow(() -> new ResourceInvalidException("Invalid token"));
         if (user.getTokenExpirationTime().isBefore(LocalDateTime.now())) {
-            throw new ResourceInvalidException("Token has expired");
+            throw new TokenExpiredException("Token has expired");
         }
         return true;
     }
