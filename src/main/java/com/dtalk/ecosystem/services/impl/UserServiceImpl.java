@@ -2,7 +2,9 @@ package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.entities.Role;
 import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.exceptions.ResourceInvalidException;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
+import com.dtalk.ecosystem.exceptions.UserAlreadyExistsException;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -39,14 +41,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> retrieveAllUserByRole(String role) {
-        return userRepository.findByRole(Role.valueOf(role));
+        try {
+            return userRepository.findByRole(Role.valueOf(role));
+        } catch (IllegalArgumentException e) {
+            throw new ResourceInvalidException("Invalid role: " + role);
+        }
     }
 
     @Override
     public User addUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User already exists with email: " + user.getEmail());
+        }
         String randomCode = RandomString.make(10);
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(randomCode));
+        user.setLocked(false);
+        user.setEnable(false);
         User u = userRepository.save(user);
         return u;
 

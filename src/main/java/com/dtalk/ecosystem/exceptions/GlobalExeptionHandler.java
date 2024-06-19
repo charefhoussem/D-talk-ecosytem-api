@@ -26,7 +26,7 @@ public class GlobalExeptionHandler {
     }
 
 @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorDetails> handleIllegalArgumentExceptionException(BadCredentialsException ex, WebRequest request) {
+    public ResponseEntity<ErrorDetails> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "invalid email or password", request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
