@@ -2,6 +2,7 @@ package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.entities.Role;
 import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long idUser) {
-        return userRepository.findById(idUser).get();
+        return userRepository.findById(idUser)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + idUser));
     }
 
     @Override
