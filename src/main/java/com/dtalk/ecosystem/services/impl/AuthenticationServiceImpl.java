@@ -7,12 +7,14 @@ import com.dtalk.ecosystem.entities.Role;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.exceptions.ResourceInvalidException;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
+import com.dtalk.ecosystem.exceptions.UserAlreadyExistsException;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.AuthenticationService;
 import com.dtalk.ecosystem.services.EmailService;
 import com.dtalk.ecosystem.services.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +34,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     @Override
     public User signup(SignUpRequest request) {
+        // Vérifier si l'utilisateur existe déjà
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists");
+        }
+
         String codeVerification = VerificationCodeGenerateService.generateCode();
 
         var user = User.builder().name(request.getName()).lastname(request.getLastname())
@@ -45,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public JwtAuthenticationResponse signin(SigninRequest request) throws IllegalArgumentException  {
+    public JwtAuthenticationResponse signin(SigninRequest request) throws BadCredentialsException {
 
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
@@ -55,7 +62,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with email: " + request.getEmail()));
 
-System.out.println("passssssseeeeeeeeeeeeeeeeeeeeeeeeee");
         var jwt = jwtService.generateToken(user);
 
         return JwtAuthenticationResponse.builder().token(jwt).build();
@@ -64,13 +70,13 @@ System.out.println("passssssseeeeeeeeeeeeeeeeeeeeeeeeee");
     @Override
     public Boolean verifCode(String code) {
         User user = userRepository.findByVerificationCode(code);
-        if (user != null && !user.getLocked()) {
-            user.setLocked(true);
-            user.setCodeVerification(null); // Réinitialise le code de vérification après approbation
-            userRepository.save(user);
-            return true;
+        if (user == null || user.getLocked()) {
+            throw new ResourceInvalidException("Invalid or already used verification code");
         }
-        return false;
+        user.setLocked(true);
+        user.setCodeVerification(null); // Réinitialise le code de vérification après approbation
+        userRepository.save(user);
+        return true;
 
     }
 
