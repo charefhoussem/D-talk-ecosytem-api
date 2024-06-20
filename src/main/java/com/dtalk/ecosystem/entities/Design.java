@@ -2,6 +2,7 @@ package com.dtalk.ecosystem.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,13 +21,33 @@ public class Design {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idDesign;
+
+    @NotBlank(message = "Name is mandatory")
+    @Size(max = 100, message = "Name must be less than 100 characters")
     private String name;
+
+    @Size(max = 255, message = "Description must be less than 255 characters")
     private String description;
+
+    @NotBlank(message = "Image path is mandatory")
     private String imagePath;
+
+    @NotBlank(message = "Origin file path is mandatory")
     private String originFilePath;
+
+    @NotNull(message = "Publish status is mandatory")
     private Boolean isPublished;
+
+    @NotNull(message = "Acceptance status is mandatory")
     private Boolean isAccepted;
+
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    @Digits(integer = 10, fraction = 2, message = "Price must be a valid amount")
     private double price;
+
+    @NotBlank(message = "Field is mandatory")
+    private String field;
+
 
     @Transient
     private MultipartFile imageFile;

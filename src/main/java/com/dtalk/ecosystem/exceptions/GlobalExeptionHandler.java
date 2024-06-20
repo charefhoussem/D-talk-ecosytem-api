@@ -1,6 +1,8 @@
 package com.dtalk.ecosystem.exceptions;
 
-import org.springframework.http.HttpHeaders;
+import com.dtalk.ecosystem.entities.ExceptionLog;
+import com.dtalk.ecosystem.repositories.ExceptionLogRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,9 +12,19 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @ControllerAdvice
 public class GlobalExeptionHandler {
+
+    @Autowired
+     private ExceptionLogRepository exceptionLogRepository;
+
+
+
+
+
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
@@ -47,10 +59,24 @@ public class GlobalExeptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
     }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleGlobalException(Exception ex, WebRequest request) {
+
+
+        ExceptionLog exceptionLog = new ExceptionLog();
+        exceptionLog.setExceptionType(ex.getClass().getName());
+        exceptionLog.setMessage(ex.getMessage());
+        exceptionLog.setEndpoint(request.getDescription(false));
+        exceptionLog.setTimestamp(LocalDateTime.now());
+
+        exceptionLogRepository.save(exceptionLog);
+
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 
 }

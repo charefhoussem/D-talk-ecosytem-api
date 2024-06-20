@@ -13,7 +13,7 @@ public interface DesignService {
     public List<Design> retrieveAllDesginsAcceptedAndPublished();
 
     public List<Design> retrieveAllDesginByUser(Long idUser);
-    public Design createDesign(String name, double price,String description, MultipartFile imageFile, MultipartFile originFile,Long idDesigner,List<String> tagNames) throws IOException;
+    public Design createDesign(String name, double price,String description, MultipartFile imageFile, MultipartFile originFile,Long idDesigner,List<String> tagNames,String field) throws IOException;
     public Boolean acceptDesign(Long idDesign);
     public Boolean disacceptDesign(Long idDesign);
 

@@ -25,8 +25,6 @@ public class ExceptionLog {
 
     private String message;
 
-    private String stackTrace;
-
     private String endpoint;
 
     private LocalDateTime timestamp;

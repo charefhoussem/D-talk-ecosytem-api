@@ -62,13 +62,14 @@ public class DesignController {
             @RequestParam("name") String name,
             @RequestParam("price") double price,
             @RequestParam("tagNames") List<String> tags,
+            @RequestParam("field") String field,
 
             @PathVariable Long idDesigner
 
             ) {
 
         try {
-            Design savedDesign = designService.createDesign(name,price,description,imageFile,originFile,idDesigner,tags);
+            Design savedDesign = designService.createDesign(name,price,description,imageFile,originFile,idDesigner,tags,field);
             return ResponseHandler.responseBuilder("design added  successfully", HttpStatus.OK,null);
         } catch (IOException e) {
             return ResponseHandler.responseBuilder("design no added ", HttpStatus.INTERNAL_SERVER_ERROR, null);

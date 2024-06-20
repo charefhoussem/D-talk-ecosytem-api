@@ -84,6 +84,8 @@ public class DesignServiceTest {
         String name = "Test Design";
         double price = 100.0;
         String description = "Test Description";
+        String field = "field";
+
         Long idDesigner = 1L;
         User user = new User();
         user.setIdUser(idDesigner);
@@ -113,7 +115,7 @@ public class DesignServiceTest {
         when(designRepository.save(any(Design.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Exécutez la méthode createDesign
-        Design createdDesign = designService.createDesign(name, price, description, imageFile, originFile, idDesigner, tagNames);
+        Design createdDesign = designService.createDesign(name, price, description, imageFile, originFile, idDesigner, tagNames,field);
 
         // Vérifiez les résultats
         assertNotNull(createdDesign);

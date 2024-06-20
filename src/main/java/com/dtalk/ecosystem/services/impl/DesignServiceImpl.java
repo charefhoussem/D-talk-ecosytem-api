@@ -53,13 +53,14 @@ public class DesignServiceImpl implements DesignService {
 
 
     @Override
-    public Design createDesign(String name, double price, String description, MultipartFile imageFile, MultipartFile originFile, Long idDesigner, List<String> tagNames) throws IOException {
+    public Design createDesign(String name, double price, String description, MultipartFile imageFile, MultipartFile originFile, Long idDesigner, List<String> tagNames,String field) throws IOException {
         Design design = new Design();
         design.setDescription(description);
         design.setName(name);
         design.setPrice(price);
         design.setIsAccepted(false);
         design.setIsPublished(false);
+        design.setField(field);
         User user = userRepository.findById(idDesigner).get();
         design.setUser(user);
         String imageFileName = saveFile(imageFile);
