@@ -77,17 +77,19 @@ public class DesignController {
     }
 
     @PreAuthorize("hasRole('DESIGNER')")
-
     @PutMapping("/modify/{id}")
     public ResponseEntity<Design> updateDesign(
             @PathVariable Long id,
             @RequestParam("description") String description,
             @RequestParam("name") String name,
-            @RequestParam("price") double price
+            @RequestParam("price") double price,
+            @RequestParam("field") String field,
+            @RequestParam("tagNames") List<String> tags
+
             ) {
 
 
-            Design updatedDesign = designService.modifyDesign(id,name,price,description);
+            Design updatedDesign = designService.modifyDesign(id,name,price,description,tags,field);
             return ResponseEntity.ok(updatedDesign);
 
     }

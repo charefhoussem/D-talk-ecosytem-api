@@ -111,12 +111,15 @@ public class DesignServiceImpl implements DesignService {
     }
 
     @Override
-    public Design modifyDesign(Long id, String name, double price, String description) {
+    public Design modifyDesign(Long id, String name, double price, String description,List<String> tagNames,String field) {
         Design design = designRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + id));
         design.setDescription(description);
         design.setName(name);
         design.setPrice(price);
+        design.setField(field);
+        Set<Tag> tags = getOrCreateTags(tagNames);
+        design.setTags(tags);
         return designRepository.save(design);
     }
 

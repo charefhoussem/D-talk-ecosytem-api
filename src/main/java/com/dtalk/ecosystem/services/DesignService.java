@@ -20,7 +20,7 @@ public interface DesignService {
     public Boolean publishDesign(Long idDesign);
     public Boolean unpublishDesign(Long idDesign);
 
-    public Design modifyDesign(Long id,String name, double price, String description);
+    public Design modifyDesign(Long id,String name, double price, String description,List<String> tagNames,String field);
 
     public void deleteDesign(Long idDesign);
 }
