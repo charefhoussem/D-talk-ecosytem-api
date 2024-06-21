@@ -77,6 +77,9 @@ public class User implements  UserDetails {
     @JsonIgnore
     private Set<Design> designs;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @JsonIgnore
+    private List<Reclamation> reclamations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -60,4 +60,7 @@ public class Design {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Tag> tags;
 
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "design")
+    private List<Reclamation> reclamations;
+
 }
