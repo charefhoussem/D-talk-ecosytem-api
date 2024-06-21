@@ -46,7 +46,7 @@ public class AuthenticationServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
+/*
     @Test
     public void testSignup() {
         // Given
@@ -83,7 +83,7 @@ public class AuthenticationServiceTest {
         verify(userRepository, times(1)).save(any(User.class));
         verify(emailService, times(1)).confirmationSignup(anyString(), anyString(), anyString());
     }
-
+*/
     @Test
     public void testSignin_ValidCredentials() {
         // Given

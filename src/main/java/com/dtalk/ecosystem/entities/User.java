@@ -56,7 +56,7 @@ public class User implements  UserDetails {
     @NotNull(message = "locked status is mandatory")
     private Boolean locked;
 
-
+    @NotBlank(message = "country is mandatory")
     @Size(max = 100, message = "Country must be less than 100 characters")
     private String country;
 

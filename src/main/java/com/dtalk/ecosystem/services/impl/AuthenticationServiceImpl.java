@@ -20,8 +20,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
@@ -33,8 +41,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
+
+    private static final String UPLOAD_DIR = "uploads/";
+
     @Override
-    public User signup(SignUpRequest request) {
+    public User signup(SignUpRequest request, MultipartFile imageFile) throws IOException {
         // Vérifier si l'utilisateur existe déjà
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists");
@@ -44,7 +55,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var user = User.builder().name(request.getName()).lastname(request.getLastname())
                 .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).locked(false).build();
+                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).locked(false).country(request.getCountry()).countryCode(request.getCountryCode()).phone(request.getPhone()).build();
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String imageUrl = saveFile(imageFile);
+            user.setImageUrl(imageUrl);
+        }
 
         userRepository.save(user);
         emailService.confirmationSignup(user.getEmail(),"Code Verification",codeVerification);
@@ -142,6 +158,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setResetPasswordToken(null);
         user.setTokenExpirationTime(null);
         userRepository.save(user);
+    }
+
+
+    private String saveFile(MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return null;
+        }
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // Use current system date and time to create a unique filename
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String uniquePart = LocalDateTime.now().format(formatter);
+
+        String uniqueFilename = uniquePart + "-" + fileName;
+        Path filePath = uploadPath.resolve(uniqueFilename);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        return filePath.toString().replace("\\", "/"); // Normalize path separators
     }
 
 

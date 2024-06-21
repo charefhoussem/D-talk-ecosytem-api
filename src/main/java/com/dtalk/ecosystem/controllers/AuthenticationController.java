@@ -12,7 +12,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,8 +25,28 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/signup")
-    public ResponseEntity<User> signup(@RequestBody SignUpRequest request) {
-        return ResponseEntity.ok(authenticationService.signup(request));
+    public ResponseEntity<User> signup(
+            @RequestParam("name") String name,
+            @RequestParam("lastname") String lastname,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("role") String role,
+            @RequestParam("country") String country,
+            @RequestParam("countryCode") String countryCode,
+            @RequestParam("phone") String phone,
+            @RequestParam("imageFile") MultipartFile imageFile
+
+            ) throws IOException {
+        SignUpRequest signUpRequest = new SignUpRequest();
+        signUpRequest.setName(name);
+        signUpRequest.setLastname(lastname);
+        signUpRequest.setEmail(email);
+        signUpRequest.setPassword(password);
+        signUpRequest.setRole(role);
+        signUpRequest.setCountry(country);
+        signUpRequest.setCountryCode(countryCode);
+        signUpRequest.setPhone(phone);
+        return ResponseEntity.ok(authenticationService.signup(signUpRequest,imageFile));
     }
 
     @PostMapping("/signin")

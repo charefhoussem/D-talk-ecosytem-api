@@ -4,9 +4,12 @@ import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
 import com.dtalk.ecosystem.DTOs.request.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
 import com.dtalk.ecosystem.entities.User;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface AuthenticationService {
-    User signup(SignUpRequest request);
+    User signup(SignUpRequest request, MultipartFile imageFile)throws IOException;
 
     JwtAuthenticationResponse signin(SigninRequest request);
 

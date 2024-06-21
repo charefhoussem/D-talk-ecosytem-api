@@ -18,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -135,7 +137,7 @@ public class DesignServiceImpl implements DesignService {
 
     private String saveFile(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
-            return null;
+            throw new ResourceNotFoundException("Failed to store empty file.");
         }
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
         Path uploadPath = Paths.get(UPLOAD_DIR);
@@ -144,7 +146,12 @@ public class DesignServiceImpl implements DesignService {
             Files.createDirectories(uploadPath);
         }
 
-        Path filePath = uploadPath.resolve(fileName);
+        // Use current system date and time to create a unique filename
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String uniquePart = LocalDateTime.now().format(formatter);
+
+        String uniqueFilename = uniquePart + "-" + fileName;
+        Path filePath = uploadPath.resolve(uniqueFilename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         return filePath.toString().replace("\\", "/"); // Normalize path separators
