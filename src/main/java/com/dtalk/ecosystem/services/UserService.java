@@ -9,7 +9,5 @@ public interface UserService {
     UserDetailsService userDetailsService();
     User getUserById(Long idUser) ;
     public List<User> retrieveAllUserByRole(String role);
-    public User addUser(User user);
-
 
 }

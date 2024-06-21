@@ -48,20 +48,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public User addUser(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsException("User already exists with email: " + user.getEmail());
-        }
-        String randomCode = RandomString.make(10);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(passwordEncoder.encode(randomCode));
-        user.setLocked(false);
-        user.setEnable(false);
-        User u = userRepository.save(user);
-        return u;
 
-    }
 
 
 

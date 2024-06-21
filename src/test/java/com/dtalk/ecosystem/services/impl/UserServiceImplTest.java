@@ -71,16 +71,6 @@ public class UserServiceImplTest {
         assertEquals(Role.ADMIN, users.get(0).getRole());
     }
 
-    @Test
-    public void testAddUser() {
-        User mockUser = new User();
-        mockUser.setPassword("plainPassword");
-        when(userRepository.save(any(User.class))).thenReturn(mockUser);
 
-        User savedUser = userService.addUser(mockUser);
-
-        assertNotNull(savedUser);
-        verify(userRepository, times(1)).save(any(User.class));
-    }
 
 }

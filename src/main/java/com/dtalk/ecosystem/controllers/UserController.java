@@ -25,10 +25,5 @@ public class UserController {
         List<User> users = userService.retrieveAllUserByRole(r);
         return users;
     }
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/add")
-    public User adduser(@RequestBody User u){
-        User user = userService.addUser(u);
-        return  user;
-    }
+
 }
