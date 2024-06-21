@@ -28,9 +28,7 @@ public class DesignServiceImpl implements DesignService {
     private final DesignRepository designRepository;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
-
-    private static final String UPLOAD_DIR = "uploads/";
-
+    private FileStorageService fileStorageService;
     @Override
     public Design getDesignById(Long idDesign) {
         return designRepository.findById(idDesign)
@@ -65,10 +63,10 @@ public class DesignServiceImpl implements DesignService {
         design.setField(field);
         User user = userRepository.findById(idDesigner).get();
         design.setUser(user);
-        String imageFileName = saveFile(imageFile);
+        String imageFileName = fileStorageService.saveFile(imageFile);
         design.setImagePath(imageFileName);
 
-        String originFileName = saveFile(originFile);
+        String originFileName = fileStorageService.saveFile(originFile);
         design.setOriginFilePath(originFileName);
 
         Set<Tag> tags = getOrCreateTags(tagNames);
@@ -135,27 +133,7 @@ public class DesignServiceImpl implements DesignService {
     }
 
 
-    private String saveFile(MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new ResourceNotFoundException("Failed to store empty file.");
-        }
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Path uploadPath = Paths.get(UPLOAD_DIR);
 
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // Use current system date and time to create a unique filename
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String uniquePart = LocalDateTime.now().format(formatter);
-
-        String uniqueFilename = uniquePart + "-" + fileName;
-        Path filePath = uploadPath.resolve(uniqueFilename);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        return filePath.toString().replace("\\", "/"); // Normalize path separators
-    }
 
     private Set<Tag> getOrCreateTags(List<String> tagNames) {
         Set<Tag> tags = new HashSet<>();

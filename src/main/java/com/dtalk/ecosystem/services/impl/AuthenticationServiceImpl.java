@@ -41,8 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
-
-    private static final String UPLOAD_DIR = "uploads/";
+    private FileStorageService fileStorageService;
 
     @Override
     public User signup(SignUpRequest request, MultipartFile imageFile) throws IOException {
@@ -58,7 +57,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).locked(false).country(request.getCountry()).countryCode(request.getCountryCode()).phone(request.getPhone()).build();
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            String imageUrl = saveFile(imageFile);
+            String imageUrl = fileStorageService.saveFile(imageFile);
             user.setImageUrl(imageUrl);
         }
 
@@ -161,27 +160,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
 
-    private String saveFile(MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            return null;
-        }
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // Use current system date and time to create a unique filename
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String uniquePart = LocalDateTime.now().format(formatter);
-
-        String uniqueFilename = uniquePart + "-" + fileName;
-        Path filePath = uploadPath.resolve(uniqueFilename);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        return filePath.toString().replace("\\", "/"); // Normalize path separators
-    }
 
 
 }
