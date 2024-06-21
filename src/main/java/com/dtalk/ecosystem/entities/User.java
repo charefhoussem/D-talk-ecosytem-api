@@ -57,10 +57,10 @@ public class User implements  UserDetails {
     private Boolean locked;
 
     @NotBlank(message = "country is mandatory")
-    @Size(max = 100, message = "Country must be less than 100 characters")
+    @Size(max = 10, message = "Country must be less than 100 characters")
     private String country;
 
-    @Size(max = 10, message = "Country code must be less than 10 characters")
+    @Size(max = 4, message = "Country code must be less than 10 characters")
     private String countryCode;
 
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number must be valid")
