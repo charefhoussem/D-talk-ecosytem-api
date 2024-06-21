@@ -62,14 +62,14 @@ public class DesignController {
             @RequestParam("name") String name,
             @RequestParam("price") double price,
             @RequestParam("tagNames") List<String> tags,
-            @RequestParam("field") String field,
+            @RequestParam("fields") List<String> fields,
 
             @PathVariable Long idDesigner
 
             ) {
 
         try {
-            Design savedDesign = designService.createDesign(name,price,description,imageFile,originFile,idDesigner,tags,field);
+            Design savedDesign = designService.createDesign(name,price,description,imageFile,originFile,idDesigner,tags,fields);
             return ResponseHandler.responseBuilder("design added  successfully", HttpStatus.OK,null);
         } catch (IOException e) {
             return ResponseHandler.responseBuilder("design no added ", HttpStatus.INTERNAL_SERVER_ERROR, null);
@@ -83,13 +83,13 @@ public class DesignController {
             @RequestParam("description") String description,
             @RequestParam("name") String name,
             @RequestParam("price") double price,
-            @RequestParam("field") String field,
-            @RequestParam("tagNames") List<String> tags
+            @RequestParam("tagNames") List<String> tags,
+            @RequestParam("fieldTitles") List<String> fieldTitles
 
             ) {
 
 
-            Design updatedDesign = designService.modifyDesign(id,name,price,description,tags,field);
+            Design updatedDesign = designService.modifyDesign(id,name,price,description,tags,fieldTitles);
             return ResponseEntity.ok(updatedDesign);
 
     }

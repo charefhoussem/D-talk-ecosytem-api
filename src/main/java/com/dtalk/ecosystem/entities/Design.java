@@ -45,8 +45,6 @@ public class Design {
     @Digits(integer = 10, fraction = 2, message = "Price must be a valid amount")
     private double price;
 
-    @NotBlank(message = "Field is mandatory")
-    private String field;
 
 
     @Transient

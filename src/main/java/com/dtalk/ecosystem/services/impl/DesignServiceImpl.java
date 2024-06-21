@@ -1,10 +1,12 @@
 package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.entities.Design;
+import com.dtalk.ecosystem.entities.Field;
 import com.dtalk.ecosystem.entities.Tag;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 import com.dtalk.ecosystem.repositories.DesignRepository;
+import com.dtalk.ecosystem.repositories.FieldRepository;
 import com.dtalk.ecosystem.repositories.TagRepository;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.DesignService;
@@ -28,6 +30,8 @@ public class DesignServiceImpl implements DesignService {
     private final DesignRepository designRepository;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
+    private final FieldRepository fieldRepository;
+
     private FileStorageService fileStorageService;
     @Override
     public Design getDesignById(Long idDesign) {
@@ -53,14 +57,13 @@ public class DesignServiceImpl implements DesignService {
 
 
     @Override
-    public Design createDesign(String name, double price, String description, MultipartFile imageFile, MultipartFile originFile, Long idDesigner, List<String> tagNames,String field) throws IOException {
+    public Design createDesign(String name, double price, String description, MultipartFile imageFile, MultipartFile originFile, Long idDesigner, List<String> tagNames,List<String> fieldTitles) throws IOException {
         Design design = new Design();
         design.setDescription(description);
         design.setName(name);
         design.setPrice(price);
         design.setIsAccepted(false);
         design.setIsPublished(false);
-        design.setField(field);
         User user = userRepository.findById(idDesigner).get();
         design.setUser(user);
         String imageFileName = fileStorageService.saveFile(imageFile);
@@ -71,6 +74,9 @@ public class DesignServiceImpl implements DesignService {
 
         Set<Tag> tags = getOrCreateTags(tagNames);
         design.setTags(tags);
+
+        Set<Field> fields = getOrCreateFields(fieldTitles);
+        design.setFields(fields);
         return designRepository.save(design);
     }
 
@@ -111,15 +117,19 @@ public class DesignServiceImpl implements DesignService {
     }
 
     @Override
-    public Design modifyDesign(Long id, String name, double price, String description,List<String> tagNames,String field) {
+    public Design modifyDesign(Long id, String name, double price, String description,List<String> tagNames,List<String> fieldTitles) {
         Design design = designRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + id));
         design.setDescription(description);
         design.setName(name);
         design.setPrice(price);
-        design.setField(field);
+
         Set<Tag> tags = getOrCreateTags(tagNames);
         design.setTags(tags);
+
+
+        Set<Field> fields = getOrCreateFields(fieldTitles);
+        design.setFields(fields);
         return designRepository.save(design);
     }
 
@@ -143,6 +153,16 @@ public class DesignServiceImpl implements DesignService {
             tags.add(tag);
         }
         return tags;
+    }
+
+    private Set<Field> getOrCreateFields(List<String> FieldTitles) {
+        Set<Field> fields = new HashSet<>();
+        for (String fieldTitle : FieldTitles) {
+            Field fild = fieldRepository.findByTitle(fieldTitle)
+                    .orElseGet(() -> Field.builder().title(fieldTitle).build());
+            fields.add(fild);
+        }
+        return fields;
     }
 
 }

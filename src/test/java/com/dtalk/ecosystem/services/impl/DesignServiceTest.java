@@ -84,12 +84,12 @@ public class DesignServiceTest {
         String name = "Test Design";
         double price = 100.0;
         String description = "Test Description";
-        String field = "field";
 
         Long idDesigner = 1L;
         User user = new User();
         user.setIdUser(idDesigner);
         List<String> tagNames = Arrays.asList("Tag1", "Tag2");
+        List<String> fieldTitles = Arrays.asList("ff1", "ff2");
 
         // Mock des méthodes de UserRepository
         when(userRepository.findById(idDesigner)).thenReturn(Optional.of(user));
@@ -115,7 +115,7 @@ public class DesignServiceTest {
         when(designRepository.save(any(Design.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // Exécutez la méthode createDesign
-        Design createdDesign = designService.createDesign(name, price, description, imageFile, originFile, idDesigner, tagNames,field);
+        Design createdDesign = designService.createDesign(name, price, description, imageFile, originFile, idDesigner, tagNames,fieldTitles);
 
         // Vérifiez les résultats
         assertNotNull(createdDesign);
