@@ -20,16 +20,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
@@ -159,7 +154,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(user);
     }
 
+    @Override
+    public void changePassword(Long idUser, String currentPassword, String newPassword) {
+        User user = userRepository.findById(idUser).orElseThrow(()-> new ResourceNotFoundException("user not found" + idUser));
+        // Vérifier que le mot de passe actuel fourni correspond au mot de passe actuel de l'utilisateur
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new BadCredentialsException("Current password does not match");
+        }
 
+        // Encoder le nouveau mot de passe
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+
+        // Sauvegarder l'utilisateur avec le nouveau mot de passe
+        userRepository.save(user);
+
+    }
 
 
 }

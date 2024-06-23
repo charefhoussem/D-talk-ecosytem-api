@@ -10,11 +10,10 @@ import com.dtalk.ecosystem.repositories.ReclamationRepository;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.ReclamationService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -38,6 +37,25 @@ public class ReclamationServiceImpl implements ReclamationService {
 
     @Override
     public Reclamation getReclamationById(Long idRec) {
-        return null;
+        return reclamationRepository.findById(idRec).orElseThrow(()-> new ResourceNotFoundException("reclamation not found" + idRec));
+    }
+
+    @Override
+    public List<Reclamation> getAllReclamation() {
+        return reclamationRepository.findAll();
+    }
+
+    @Override
+    public List<Reclamation> getAllReclamationByUser(Long idUser) {
+        User user = userRepository.findById(idUser).orElseThrow(()->new ResourceNotFoundException("user not found " + idUser) );
+        return reclamationRepository.findReclamationsByUser(user);
+    }
+
+    @Override
+    public void deleteReclamation(Long idReclamation) {
+        Reclamation rec = reclamationRepository.findById(idReclamation).orElseThrow(()->new ResourceNotFoundException("reclamation not found " + idReclamation) );
+
+        reclamationRepository.deleteById(idReclamation);
+
     }
 }

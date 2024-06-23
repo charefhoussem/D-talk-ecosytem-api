@@ -23,5 +23,7 @@ public interface AuthenticationService {
     public boolean validatePasswordResetToken(String token);
     public void resetPassword(String token, String newPassword);
 
+    public void changePassword(Long idUser,String currentPassword, String newPassword);
+
 
 }
