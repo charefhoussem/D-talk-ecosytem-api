@@ -37,6 +37,12 @@ public class ReclamationController {
     public List<Reclamation> getALLreclamationByUser(@PathVariable("idUser") Long id){
         return reclamationService.getAllReclamationByUser(id);
     }
+
+    @GetMapping("/design/{idDesign}")
+    public List<Reclamation> getALLreclamationByDesign(@PathVariable("idDesign") Long id){
+        return reclamationService.getAllReclamationByDesign(id);
+    }
+
     @DeleteMapping("/delete/{idRec}")
     public ResponseEntity<Object> deleteReclamation(@PathVariable("idRec") Long id){
        reclamationService.deleteReclamation(id);

@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.repositories;
 
+import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.Reclamation;
 import com.dtalk.ecosystem.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +11,6 @@ import java.util.List;
 @Repository
 public interface ReclamationRepository extends JpaRepository<Reclamation,Long> {
     List<Reclamation> findReclamationsByUser(User user);
+    List<Reclamation> findReclamationsByDesign(Design design);
+
 }

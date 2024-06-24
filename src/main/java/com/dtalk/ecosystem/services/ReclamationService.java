@@ -14,6 +14,8 @@ public interface ReclamationService {
 
      public List<Reclamation> getAllReclamationByUser(Long idUser);
 
+     public List<Reclamation> getAllReclamationByDesign(Long idDesign);
+
      public void deleteReclamation(Long idReclamation);
 
 

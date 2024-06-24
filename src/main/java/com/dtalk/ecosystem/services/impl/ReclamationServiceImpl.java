@@ -52,6 +52,12 @@ public class ReclamationServiceImpl implements ReclamationService {
     }
 
     @Override
+    public List<Reclamation> getAllReclamationByDesign(Long idDesign) {
+        Design design = designRepository.findById(idDesign).orElseThrow(()->new ResourceNotFoundException("design not found " + idDesign) );
+        return reclamationRepository.findReclamationsByDesign(design);
+    }
+
+    @Override
     public void deleteReclamation(Long idReclamation) {
         Reclamation rec = reclamationRepository.findById(idReclamation).orElseThrow(()->new ResourceNotFoundException("reclamation not found " + idReclamation) );
 
