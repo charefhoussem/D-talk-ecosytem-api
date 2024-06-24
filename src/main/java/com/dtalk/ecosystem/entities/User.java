@@ -66,7 +66,7 @@ public class User implements  UserDetails {
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number must be valid")
     private String phone;
 
-    @Size(max = 255, message = "Image URL must be less than 255 characters")
+   // @Size(max = 255, message = "Image URL must be less than 255 characters")
     private String imageUrl;
 
    // for reset_password

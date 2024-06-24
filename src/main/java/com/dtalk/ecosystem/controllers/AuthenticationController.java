@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.controllers;
 
+import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
 import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
 import com.dtalk.ecosystem.DTOs.request.SigninRequest;
 import com.dtalk.ecosystem.DTOs.request.VerifCodeRequest;
@@ -113,6 +114,13 @@ public class AuthenticationController {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST, null);
 
         }
+    }
+
+    @PutMapping("/change-password/{idUser}")
+    public ResponseEntity<Object> changePassword(@PathVariable("idUser") Long idUser, @RequestBody ChangePasswordRequest request){
+        authenticationService.changePassword(idUser,request);
+        return ResponseEntity.ok().build();
+
     }
 
 

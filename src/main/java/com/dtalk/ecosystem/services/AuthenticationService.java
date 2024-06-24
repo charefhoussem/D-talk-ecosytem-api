@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services;
 
+import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
 import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
 import com.dtalk.ecosystem.DTOs.request.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
@@ -23,7 +24,7 @@ public interface AuthenticationService {
     public boolean validatePasswordResetToken(String token);
     public void resetPassword(String token, String newPassword);
 
-    public void changePassword(Long idUser,String currentPassword, String newPassword);
+    public void changePassword(Long idUser, ChangePasswordRequest req);
 
 
 }

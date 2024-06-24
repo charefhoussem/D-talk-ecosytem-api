@@ -42,6 +42,7 @@ public class GlobalExeptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), "invalid email or password", request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorDetails> handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));

@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services.impl;
 
+import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
 import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
 import com.dtalk.ecosystem.DTOs.request.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
@@ -191,6 +192,25 @@ public class AuthenticationServiceTest {
         verify(userRepository, times(1)).findById(userId);
         verify(userRepository, times(1)).save(mockUser);
         verify(jwtService, never()).generateToken(any(User.class)); // Vérifie qu'aucun token n'est généré lors de la désactivation
+    }
+
+    @Test
+    public void testChangePassword_Success() {
+        Long userId = 1L;
+        ChangePasswordRequest req = new ChangePasswordRequest();
+        req.setCurrentPassword("currentPassword");
+        req.setNewPassword("newPassword");
+        User user = new User();
+        user.setPassword("encodedCurrentPassword");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())).thenReturn(true);
+        when(passwordEncoder.encode(req.getNewPassword())).thenReturn("encodedNewPassword");
+
+        authService.changePassword(userId,req);
+
+        assertEquals("encodedNewPassword", user.getPassword());
+        verify(userRepository, times(1)).save(user);
     }
 
 }

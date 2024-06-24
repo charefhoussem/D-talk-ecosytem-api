@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services.impl;
 
+import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
 import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
 import com.dtalk.ecosystem.DTOs.request.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
@@ -155,20 +156,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void changePassword(Long idUser, String currentPassword, String newPassword) {
+    public void changePassword(Long idUser, ChangePasswordRequest request) {
+
         User user = userRepository.findById(idUser).orElseThrow(()-> new ResourceNotFoundException("user not found" + idUser));
-        // Vérifier que le mot de passe actuel fourni correspond au mot de passe actuel de l'utilisateur
-        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new BadCredentialsException("Current password does not match");
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new ResourceInvalidException("Current password does not match");
         }
-
-        // Encoder le nouveau mot de passe
-        String encodedPassword = passwordEncoder.encode(newPassword);
+        String encodedPassword = passwordEncoder.encode(request.getNewPassword());
         user.setPassword(encodedPassword);
-
-        // Sauvegarder l'utilisateur avec le nouveau mot de passe
         userRepository.save(user);
-
     }
 
 

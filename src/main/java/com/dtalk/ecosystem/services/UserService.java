@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services;
 
+import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
 import com.dtalk.ecosystem.entities.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -9,5 +10,6 @@ public interface UserService {
     UserDetailsService userDetailsService();
     User getUserById(Long idUser) ;
     public List<User> retrieveAllUserByRole(String role);
+
 
 }

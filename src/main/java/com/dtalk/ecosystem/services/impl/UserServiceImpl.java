@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services.impl;
 
+import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
 import com.dtalk.ecosystem.entities.Role;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.exceptions.ResourceInvalidException;
@@ -9,6 +10,7 @@ import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.UserService;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
     @Override
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -47,6 +50,8 @@ public class UserServiceImpl implements UserService {
             throw new ResourceInvalidException("Invalid role: " + role);
         }
     }
+
+
 
 
 
