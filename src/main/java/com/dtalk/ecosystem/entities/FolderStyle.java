@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -26,11 +28,14 @@ public class FolderStyle {
     @Size(max = 255, message = "Description must be less than 255 characters")
     private String description;
 
-    @NotBlank(message = "type path is mandatory")
+    @NotBlank(message = "type  is mandatory")
     private String type;
 
     @NotBlank(message = "file 3D file path is mandatory")
     private String  file_3d_Path;
+
+    @NotBlank(message = "origin file file path is mandatory")
+    private String  originFile;
 
     @NotNull(message = "Publish status is mandatory")
     private Boolean isPublished;
@@ -41,5 +46,11 @@ public class FolderStyle {
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     @Digits(integer = 10, fraction = 2, message = "Price must be a valid amount")
     private double price;
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<FieldFolderStyle> fieldStyles;
+
+
 
 }
