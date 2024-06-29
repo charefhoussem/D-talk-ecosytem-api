@@ -18,5 +18,8 @@ public class SignUpRequest {
     private String country;
     private String countryCode;
     private String phone;
+    private String description;
+    private String instagramUrl;
+
 
 }
