@@ -35,7 +35,9 @@ public class AuthenticationController {
             @RequestParam("country") String country,
             @RequestParam("countryCode") String countryCode,
             @RequestParam("phone") String phone,
-            @RequestParam("imageFile") MultipartFile imageFile
+            @RequestParam("imageFile") MultipartFile imageFile,
+            @RequestParam("description") String description,
+            @RequestParam("instagram") String instagram
 
             ) throws IOException {
         SignUpRequest signUpRequest = new SignUpRequest();
@@ -47,6 +49,10 @@ public class AuthenticationController {
         signUpRequest.setCountry(country);
         signUpRequest.setCountryCode(countryCode);
         signUpRequest.setPhone(phone);
+
+        signUpRequest.setInstagramUrl(instagram);
+        signUpRequest.setDescription(description);
+
         return ResponseEntity.ok(authenticationService.signup(signUpRequest,imageFile));
     }
 

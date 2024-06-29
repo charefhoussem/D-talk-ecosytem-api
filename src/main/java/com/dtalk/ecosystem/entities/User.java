@@ -69,9 +69,16 @@ public class User implements  UserDetails {
    // @Size(max = 255, message = "Image URL must be less than 255 characters")
     private String imageUrl;
 
+
+
    // for reset_password
     private String resetPasswordToken;
     private LocalDateTime tokenExpirationTime;
+
+    // description and instagram (user : designer , fashion designer )
+    private String description;
+    private String instagramUrl;
+
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
@@ -80,6 +87,11 @@ public class User implements  UserDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonIgnore
     private List<Reclamation> reclamations;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="fashiondesigner")
+    @JsonIgnore
+    private Set<FolderStyle> folders ;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -13,8 +13,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 
-@Table(name = "folder_style")
-
 public class FolderStyle {
 
     @Id
@@ -47,6 +45,8 @@ public class FolderStyle {
     @Digits(integer = 10, fraction = 2, message = "Price must be a valid amount")
     private double price;
 
+    @ManyToOne
+    private User fashiondesigner;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<FieldFolderStyle> fieldStyles;

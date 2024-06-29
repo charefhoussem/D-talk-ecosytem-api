@@ -15,6 +15,7 @@ import com.dtalk.ecosystem.services.AuthenticationService;
 import com.dtalk.ecosystem.services.EmailService;
 import com.dtalk.ecosystem.services.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,7 +39,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private FileStorageService fileStorageService;
-
+    @Autowired
+    public void setFileStorageService(FileStorageService fileStorageService) {
+        this.fileStorageService = fileStorageService;
+    }
     @Override
     public User signup(SignUpRequest request, MultipartFile imageFile) throws IOException {
         // Vérifier si l'utilisateur existe déjà
@@ -48,18 +52,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String codeVerification = VerificationCodeGenerateService.generateCode();
 
-        var user = User.builder().name(request.getName()).lastname(request.getLastname())
-                .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).locked(false).country(request.getCountry()).countryCode(request.getCountryCode()).phone(request.getPhone()).build();
+        User u = new User();
+        u.setName(request.getName());
+        u.setLastname(request.getLastname());
+        u.setEmail(request.getEmail());
+        u.setPassword(passwordEncoder.encode(request.getPassword()));
+        u.setRole(Role.valueOf(request.getRole()));
+        u.setCodeVerification(codeVerification);
+        u.setEnable(false);
+        u.setLocked(false);
+        u.setCountry(request.getCountry());
+        u.setCountryCode(request.getCountryCode());
+        u.setPhone(request.getPhone());
+        u.setInstagramUrl(request.getInstagramUrl());
+        u.setDescription(request.getDescription());
 
-        if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = fileStorageService.saveFile(imageFile);
-            user.setImageUrl(imageUrl);
-        }
+            u.setImageUrl(imageUrl);
 
-        userRepository.save(user);
-        emailService.confirmationSignup(user.getEmail(),"Code Verification",codeVerification);
-        return user;
+
+        userRepository.save(u);
+        emailService.confirmationSignup(u.getEmail(),"Code Verification",codeVerification);
+        return u;
 
     }
 
