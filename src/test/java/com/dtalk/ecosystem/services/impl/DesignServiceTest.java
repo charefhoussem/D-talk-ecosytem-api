@@ -1,9 +1,11 @@
 package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.entities.Design;
+import com.dtalk.ecosystem.entities.Field;
 import com.dtalk.ecosystem.entities.Tag;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.repositories.DesignRepository;
+import com.dtalk.ecosystem.repositories.FieldRepository;
 import com.dtalk.ecosystem.repositories.TagRepository;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,10 +22,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,13 +41,15 @@ public class DesignServiceTest {
     private TagRepository tagRepository;
 
     @Mock
-    private MultipartFile imageFile;
+    private FieldRepository fieldRepository;
 
     @Mock
-    private MultipartFile originFile;
+    private FileStorageService fileStorageService;
 
     @InjectMocks
     private DesignServiceImpl designService;
+
+
 
     @BeforeEach
     public void setUp() {
@@ -80,57 +81,48 @@ public class DesignServiceTest {
 
     @Test
     public void testCreateDesign() throws IOException {
-        // Préparez les données de test
+        // Arrange
         String name = "Test Design";
         double price = 100.0;
-        String description = "Test Description";
-
+        String description = "This is a test design";
+        MultipartFile imageFile = mock(MultipartFile.class);
+        MultipartFile originFile = mock(MultipartFile.class);
         Long idDesigner = 1L;
+        List<String> tagNames = new ArrayList<>();
+        tagNames.add("TestTag");
+        List<String> fieldTitles = new ArrayList<>();
+        fieldTitles.add("TestField");
+
         User user = new User();
         user.setIdUser(idDesigner);
-        List<String> tagNames = Arrays.asList("Tag1", "Tag2");
-        List<String> fieldTitles = Arrays.asList("ff1", "ff2");
 
-        // Mock des méthodes de UserRepository
         when(userRepository.findById(idDesigner)).thenReturn(Optional.of(user));
+        when(fileStorageService.saveFile(imageFile)).thenReturn("imageFilePath");
+        when(fileStorageService.saveFile(originFile)).thenReturn("originFilePath");
 
-        // Mock des fichiers MultipartFile
-        when(imageFile.isEmpty()).thenReturn(false);
-        when(imageFile.getOriginalFilename()).thenReturn("image.jpg");
-        InputStream imageFileStream = new ByteArrayInputStream("image content".getBytes());
-        when(imageFile.getInputStream()).thenReturn(imageFileStream);
+        Tag tag = new Tag();
+        tag.setName("TestTag");
+        when(tagRepository.findByName("TestTag")).thenReturn(Optional.of(tag));
 
-        when(originFile.isEmpty()).thenReturn(false);
-        when(originFile.getOriginalFilename()).thenReturn("origin.zip");
-        InputStream originFileStream = new ByteArrayInputStream("origin content".getBytes());
-        when(originFile.getInputStream()).thenReturn(originFileStream);
+        Field field = new Field();
+        field.setTitle("TestField");
+        when(fieldRepository.findByTitle("TestField")).thenReturn(Optional.of(field));
 
-        // Mock des tags
-        when(tagRepository.findByName(anyString())).thenAnswer(invocation -> {
-            String tagName = invocation.getArgument(0);
-            return Optional.of(Tag.builder().name(tagName).build());
-        });
+        when(designRepository.save(any(Design.class))).thenAnswer(i -> i.getArgument(0));
 
-        // Mock de la méthode save de DesignRepository
-        when(designRepository.save(any(Design.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        // Act
+        Design createdDesign = designService.createDesign(name, price, description, imageFile, originFile, idDesigner, tagNames, fieldTitles);
 
-        // Exécutez la méthode createDesign
-        Design createdDesign = designService.createDesign(name, price, description, imageFile, originFile, idDesigner, tagNames,fieldTitles);
-
-        // Vérifiez les résultats
-        assertNotNull(createdDesign);
+        // Assert
         assertEquals(name, createdDesign.getName());
         assertEquals(price, createdDesign.getPrice());
         assertEquals(description, createdDesign.getDescription());
+        assertEquals("imageFilePath", createdDesign.getImagePath());
+        assertEquals("originFilePath", createdDesign.getOriginFilePath());
         assertEquals(user, createdDesign.getUser());
-        assertNotNull(createdDesign.getImagePath());
-        assertNotNull(createdDesign.getOriginFilePath());
-        assertEquals(tagNames.size(), createdDesign.getTags().size());
-
-        // Vérifiez que les méthodes mockées ont été appelées
-        verify(userRepository).findById(idDesigner);
-        verify(tagRepository, times(tagNames.size())).findByName(anyString());
-        verify(designRepository).save(any(Design.class));
+        assertEquals(1, createdDesign.getTags().size());
+        assertEquals(1, createdDesign.getFields().size());
+        verify(designRepository, times(1)).save(createdDesign);
     }
 
 

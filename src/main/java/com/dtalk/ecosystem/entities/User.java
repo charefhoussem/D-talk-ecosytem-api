@@ -88,7 +88,7 @@ public class User implements  UserDetails {
     @JsonIgnore
     private List<Reclamation> reclamations;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="fashiondesigner")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
     private Set<FolderStyle> folders ;
 

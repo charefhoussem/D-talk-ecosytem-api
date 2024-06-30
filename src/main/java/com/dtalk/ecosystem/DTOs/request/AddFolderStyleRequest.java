@@ -1,23 +1,13 @@
-package com.dtalk.ecosystem.entities;
+package com.dtalk.ecosystem.DTOs.request;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Set;
+import java.util.List;
 
-@Entity
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-
-public class FolderStyle {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idFolder;
+@Data
+public class AddFolderStyleRequest {
 
     @NotBlank(message = "Name is mandatory")
     @Size(max = 100, message = "Name must be less than 100 characters")
@@ -33,7 +23,7 @@ public class FolderStyle {
     private String  file_3d_Path;
 
     @NotBlank(message = "origin file file path is mandatory")
-    private String  originFile;
+    private MultipartFile originFile;
 
     @NotNull(message = "Publish status is mandatory")
     private Boolean isPublished;
@@ -45,12 +35,5 @@ public class FolderStyle {
     @Digits(integer = 10, fraction = 2, message = "Price must be a valid amount")
     private double price;
 
-    @ManyToOne
-    private User user;
-
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Set<FieldFolderStyle> fieldStyles;
-
-
-
+    List<String> fields;
 }
