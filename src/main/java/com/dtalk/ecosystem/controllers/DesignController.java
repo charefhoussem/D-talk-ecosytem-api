@@ -4,7 +4,6 @@ import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.response.ResponseHandler;
 import com.dtalk.ecosystem.services.DesignService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/design")
@@ -72,7 +70,7 @@ public class DesignController {
             Design savedDesign = designService.createDesign(name,price,description,imageFile,originFile,idDesigner,tags,fields);
             return ResponseHandler.responseBuilder("design added  successfully", HttpStatus.OK,null);
         } catch (IOException e) {
-            return ResponseHandler.responseBuilder("design no added ", HttpStatus.INTERNAL_SERVER_ERROR, null);
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, null);
         }
     }
 
@@ -108,8 +106,8 @@ public class DesignController {
 
     @PutMapping("/disaccept/{id}")
     public ResponseEntity<Object> disacceptDesign(@PathVariable("id") Long id){
-        Boolean accept = designService.disacceptDesign(id);
-        if (accept){
+        Boolean disccept = designService.disacceptDesign(id);
+        if (disccept){
             return    ResponseHandler.responseBuilder("design disccepted",HttpStatus.OK,null);
         }else{
             return    ResponseHandler.responseBuilder("design not found",HttpStatus.NOT_FOUND,null);

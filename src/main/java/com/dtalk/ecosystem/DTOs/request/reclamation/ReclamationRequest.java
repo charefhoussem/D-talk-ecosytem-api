@@ -1,4 +1,4 @@
-package com.dtalk.ecosystem.DTOs.request;
+package com.dtalk.ecosystem.DTOs.request.reclamation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

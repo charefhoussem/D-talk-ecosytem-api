@@ -1,10 +1,8 @@
 package com.dtalk.ecosystem.services;
 
-import com.dtalk.ecosystem.DTOs.request.AddFolderStyleRequest;
-import com.dtalk.ecosystem.DTOs.request.ModifyFolderStyleRequest;
-import com.dtalk.ecosystem.entities.Design;
+import com.dtalk.ecosystem.DTOs.request.folderStyle.AddFolderStyleRequest;
+import com.dtalk.ecosystem.DTOs.request.folderStyle.ModifyFolderStyleRequest;
 import com.dtalk.ecosystem.entities.FolderStyle;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;

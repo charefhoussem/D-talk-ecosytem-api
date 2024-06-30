@@ -1,6 +1,6 @@
 package com.dtalk.ecosystem.services.impl;
 
-import com.dtalk.ecosystem.DTOs.request.ReclamationRequest;
+import com.dtalk.ecosystem.DTOs.request.reclamation.ReclamationRequest;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.Reclamation;
 import com.dtalk.ecosystem.entities.User;

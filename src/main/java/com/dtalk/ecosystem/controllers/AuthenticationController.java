@@ -1,22 +1,20 @@
 package com.dtalk.ecosystem.controllers;
 
-import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
-import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
-import com.dtalk.ecosystem.DTOs.request.SigninRequest;
-import com.dtalk.ecosystem.DTOs.request.VerifCodeRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.ChangePasswordRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.SignUpRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.SigninRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.VerifCodeRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.response.ResponseHandler;
 import com.dtalk.ecosystem.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController

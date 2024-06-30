@@ -1,7 +1,7 @@
 package com.dtalk.ecosystem.services.impl;
 
-import com.dtalk.ecosystem.DTOs.request.AddFolderStyleRequest;
-import com.dtalk.ecosystem.DTOs.request.ModifyFolderStyleRequest;
+import com.dtalk.ecosystem.DTOs.request.folderStyle.AddFolderStyleRequest;
+import com.dtalk.ecosystem.DTOs.request.folderStyle.ModifyFolderStyleRequest;
 import com.dtalk.ecosystem.entities.*;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 import com.dtalk.ecosystem.repositories.FieldFolderStyleRepository;

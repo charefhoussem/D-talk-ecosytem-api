@@ -1,8 +1,7 @@
 package com.dtalk.ecosystem.services.impl;
 
-import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
-import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
-import com.dtalk.ecosystem.DTOs.request.SigninRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.ChangePasswordRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
 import com.dtalk.ecosystem.entities.User;
 import com.dtalk.ecosystem.repositories.UserRepository;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;

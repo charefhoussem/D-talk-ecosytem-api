@@ -1,6 +1,6 @@
 package com.dtalk.ecosystem.services;
 
-import com.dtalk.ecosystem.DTOs.request.ReclamationRequest;
+import com.dtalk.ecosystem.DTOs.request.reclamation.ReclamationRequest;
 import com.dtalk.ecosystem.entities.Reclamation;
 
 import java.util.List;

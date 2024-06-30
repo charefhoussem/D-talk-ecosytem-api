@@ -1,4 +1,4 @@
-package com.dtalk.ecosystem.DTOs.request;
+package com.dtalk.ecosystem.DTOs.request.authentication;
 
 
 import lombok.Data;
