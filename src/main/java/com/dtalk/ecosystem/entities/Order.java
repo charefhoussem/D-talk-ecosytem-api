@@ -18,7 +18,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idOrder;
 
-    private Date name;
+    private Date date;
 
     private Double amount;
 
