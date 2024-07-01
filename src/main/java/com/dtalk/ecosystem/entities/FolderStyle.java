@@ -51,6 +51,9 @@ public class FolderStyle {
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<FieldFolderStyle> fieldStyles;
 
+    @ManyToOne
+    Order order;
+
 
 
 }

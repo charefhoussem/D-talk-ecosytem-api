@@ -48,12 +48,15 @@ public class User implements  UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+
     private String codeVerification;
 
     @NotNull(message = "Enable status is mandatory")
+    @JsonIgnore
     private Boolean enable;
 
     @NotNull(message = "locked status is mandatory")
+    @JsonIgnore
     private Boolean locked;
 
     @NotBlank(message = "country is mandatory")
@@ -72,7 +75,9 @@ public class User implements  UserDetails {
 
 
    // for reset_password
-    private String resetPasswordToken;
+   @JsonIgnore
+   private String resetPasswordToken;
+    @JsonIgnore
     private LocalDateTime tokenExpirationTime;
 
     // description and instagram (user : designer , fashion designer )

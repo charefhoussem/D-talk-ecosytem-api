@@ -7,6 +7,7 @@ import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 import com.dtalk.ecosystem.repositories.FieldFolderStyleRepository;
 import com.dtalk.ecosystem.repositories.FolderStyleRepository;
 import com.dtalk.ecosystem.repositories.UserRepository;
+import com.dtalk.ecosystem.services.EmailService;
 import com.dtalk.ecosystem.services.FolderStyleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class FolderStyleServiceImpl implements FolderStyleService {
     private final FolderStyleRepository folderStyleRepository;
     private final FieldFolderStyleRepository fieldFolderStyleRepository;
     private final FileStorageService fileStorageService;
+    private final EmailService emailService;
 
 
     @Override
@@ -82,6 +84,8 @@ public class FolderStyleServiceImpl implements FolderStyleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Folder not found with id: " + idFolderStyle));
         folder.setIsAccepted(true);
         folderStyleRepository.save(folder);
+        emailService.notification(folder.getUser().getEmail(),true,"NotificationFolderStyle","Notification Dossier de style");
+
         return true;
     }
 
@@ -92,6 +96,8 @@ public class FolderStyleServiceImpl implements FolderStyleService {
                 .orElseThrow(() -> new ResourceNotFoundException("folder not found with id: " + idFolderStyle));
         folder.setIsAccepted(false);
         folderStyleRepository.save(folder);
+        emailService.notification(folder.getUser().getEmail(),false,"NotificationFolderStyle","Notification Dossier de style");
+
         return true;
     }
 

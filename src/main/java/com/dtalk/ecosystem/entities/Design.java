@@ -64,4 +64,7 @@ public class Design {
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "design")
     private List<Reclamation> reclamations;
 
+    @ManyToOne
+    Order order;
+
 }

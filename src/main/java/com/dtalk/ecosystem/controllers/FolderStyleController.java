@@ -2,7 +2,6 @@ package com.dtalk.ecosystem.controllers;
 
 import com.dtalk.ecosystem.DTOs.request.folderStyle.AddFolderStyleRequest;
 import com.dtalk.ecosystem.DTOs.request.folderStyle.ModifyFolderStyleRequest;
-import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.FolderStyle;
 import com.dtalk.ecosystem.response.ResponseHandler;
 import com.dtalk.ecosystem.services.FolderStyleService;

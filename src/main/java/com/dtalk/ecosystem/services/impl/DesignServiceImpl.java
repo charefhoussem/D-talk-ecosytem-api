@@ -10,6 +10,7 @@ import com.dtalk.ecosystem.repositories.FieldRepository;
 import com.dtalk.ecosystem.repositories.TagRepository;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.DesignService;
+import com.dtalk.ecosystem.services.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ public class DesignServiceImpl implements DesignService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final FieldRepository fieldRepository;
+    private final EmailService emailService;
 
     private FileStorageService fileStorageService;
     @Override
@@ -80,6 +82,8 @@ public class DesignServiceImpl implements DesignService {
             .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(true);
         designRepository.save(design);
+        emailService.notification(design.getUser().getEmail(),true,"NotificationDesignMail","Notification Design");
+
         return true;
     }
 
@@ -89,6 +93,9 @@ public class DesignServiceImpl implements DesignService {
                 .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(false);
         designRepository.save(design);
+
+        emailService.notification(design.getUser().getEmail(),false,"NotificationDesignMail","Notification Design");
+
         return true;
     }
 
