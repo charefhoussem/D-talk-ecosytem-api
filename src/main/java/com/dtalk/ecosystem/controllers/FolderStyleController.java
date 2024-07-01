@@ -23,7 +23,6 @@ public class FolderStyleController {
 
     private final FolderStyleService folderStyleService;
     @PreAuthorize("hasRole('ADMIN')")
-
     @GetMapping("/")
    public List<FolderStyle> getALLFolderStyle(){
        return folderStyleService.retrieveAllFolderStyles();

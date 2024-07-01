@@ -9,7 +9,6 @@ import com.dtalk.ecosystem.repositories.FolderStyleRepository;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import com.dtalk.ecosystem.services.FolderStyleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -24,13 +23,8 @@ public class FolderStyleServiceImpl implements FolderStyleService {
     private final UserRepository userRepository;
     private final FolderStyleRepository folderStyleRepository;
     private final FieldFolderStyleRepository fieldFolderStyleRepository;
+    private final FileStorageService fileStorageService;
 
-    private FileStorageService fileStorageService;
-
-    @Autowired
-    public void setFileStorageService(FileStorageService fileStorageService) {
-        this.fileStorageService = fileStorageService;
-    }
 
     @Override
     public FolderStyle getFolderStyleById(Long idFolderStyle) {
@@ -75,6 +69,7 @@ public class FolderStyleServiceImpl implements FolderStyleService {
         Set<FieldFolderStyle> fieldFolderStyles = getOrCreateFields(request.getFields());
         folder.setFieldStyles(fieldFolderStyles);
 
+        folder.setUser(user);
         return folderStyleRepository.save(folder);
 
 
