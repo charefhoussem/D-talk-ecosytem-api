@@ -48,7 +48,7 @@ public class User implements  UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
+    @JsonIgnore
     private String codeVerification;
 
     @NotNull(message = "Enable status is mandatory")
@@ -85,17 +85,29 @@ public class User implements  UserDetails {
     private String instagramUrl;
 
 
+    //brand
+    private int brandAge;
+
+    //designer
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
     private Set<Design> designs;
+
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonIgnore
     private List<Reclamation> reclamations;
 
+
+    //FashionDesigner
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
     private Set<FolderStyle> folders ;
+
+    //brand
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<ProductionType> productionTypes;
 
 
     @Override

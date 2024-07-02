@@ -25,6 +25,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private EtatOrder etat;
 
+    private int quantity;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
     private Set<FolderStyle> folderStyles ;
 
