@@ -22,6 +22,9 @@ public class Order {
 
     private Double amount;
 
+    @Enumerated(EnumType.STRING)
+    private EtatOrder etat;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
     private Set<FolderStyle> folderStyles ;
 
