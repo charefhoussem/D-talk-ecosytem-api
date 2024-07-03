@@ -1,5 +1,6 @@
-package com.dtalk.ecosystem.entities;
+package com.dtalk.ecosystem.entities.users;
 
+import com.dtalk.ecosystem.entities.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -11,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -19,9 +19,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
-@Table(name = "users")
-
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name ="users")
 public class User implements  UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +29,6 @@ public class User implements  UserDetails {
     @Size(max = 50, message = "Name must be less than 50 characters")
     private String name;
 
-    @NotBlank(message = "Lastname is mandatory")
-    @Size(max = 50, message = "Lastname must be less than 50 characters")
-    private String lastname;
 
     @Email(message = "Email must be valid")
     @NotBlank(message = "Email is mandatory")
@@ -69,10 +65,8 @@ public class User implements  UserDetails {
     @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Phone number must be valid")
     private String phone;
 
-   // @Size(max = 255, message = "Image URL must be less than 255 characters")
+    @Size(max = 255, message = "Image URL must be less than 255 characters")
     private String imageUrl;
-
-
 
    // for reset_password
    @JsonIgnore
@@ -80,34 +74,10 @@ public class User implements  UserDetails {
     @JsonIgnore
     private LocalDateTime tokenExpirationTime;
 
-    // description and instagram (user : designer , fashion designer )
-    private String description;
-    private String instagramUrl;
-
-
-    //brand
-    private int brandAge;
-
-    //designer
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    @JsonIgnore
-    private Set<Design> designs;
-
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonIgnore
     private List<Reclamation> reclamations;
-
-
-    //FashionDesigner
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
-    @JsonIgnore
-    private Set<FolderStyle> folders ;
-
-    //brand
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<ProductionType> productionTypes;
 
 
     @Override

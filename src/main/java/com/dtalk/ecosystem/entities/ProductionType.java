@@ -1,6 +1,6 @@
 package com.dtalk.ecosystem.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.dtalk.ecosystem.entities.users.Brand;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -16,12 +16,12 @@ import java.util.Set;
 public class ProductionType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idProd;
+    private long idProdType;
 
     @NotBlank(message = "type is mandatory")
     private String type;
 
 
     @ManyToMany(mappedBy="productionTypes", cascade = CascadeType.ALL)
-    private Set<User> users;
+    private Set<Brand> brands;
 }

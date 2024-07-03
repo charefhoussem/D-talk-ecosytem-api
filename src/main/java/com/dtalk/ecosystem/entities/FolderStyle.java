@@ -1,9 +1,11 @@
 package com.dtalk.ecosystem.entities;
 
+import com.dtalk.ecosystem.entities.users.FashionDesigner;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -12,6 +14,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name ="folder_styles")
 
 public class FolderStyle {
 
@@ -46,13 +49,17 @@ public class FolderStyle {
     private double price;
 
     @ManyToOne
-    private User user;
+    private FashionDesigner fashionDesigner;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<FieldFolderStyle> fieldStyles;
 
     @ManyToOne
     Order order;
+
+
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "folderStyle")
+    private List<Reclamation> reclamations;
 
 
 

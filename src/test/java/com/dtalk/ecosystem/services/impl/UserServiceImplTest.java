@@ -1,7 +1,7 @@
 package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.entities.Role;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.users.User;
 import com.dtalk.ecosystem.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

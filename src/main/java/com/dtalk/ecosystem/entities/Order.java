@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.entities;
 
+import com.dtalk.ecosystem.entities.users.Brand;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +33,10 @@ public class Order {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
     private Set<Design> designs ;
+
+
+    @ManyToOne
+    private Brand brand;
 
 
 

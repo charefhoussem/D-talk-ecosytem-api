@@ -1,17 +1,21 @@
 package com.dtalk.ecosystem.services;
 
-import com.dtalk.ecosystem.DTOs.request.authentication.ChangePasswordRequest;
-import com.dtalk.ecosystem.DTOs.request.authentication.SignUpRequest;
-import com.dtalk.ecosystem.DTOs.request.authentication.SigninRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.*;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
-import com.dtalk.ecosystem.entities.User;
-import org.springframework.web.multipart.MultipartFile;
+import com.dtalk.ecosystem.entities.users.Admin;
+import com.dtalk.ecosystem.entities.users.Brand;
+import com.dtalk.ecosystem.entities.users.Designer;
+import com.dtalk.ecosystem.entities.users.FashionDesigner;
 
 import java.io.IOException;
 
 public interface AuthenticationService {
-    User signup(SignUpRequest request, MultipartFile imageFile)throws IOException;
+    Designer signupDesigner(SignUpDesignerAndFashionRequest request)throws IOException;
+    FashionDesigner signupFashionDesigner(SignUpDesignerAndFashionRequest request)throws IOException;
 
+    Brand signupBrand(SignUpBrandRequest request)throws IOException;
+
+    Admin signupAdmin(SignUpAdminRequest request)throws IOException;
     JwtAuthenticationResponse signin(SigninRequest request);
 
     public Boolean verifCode(String code);

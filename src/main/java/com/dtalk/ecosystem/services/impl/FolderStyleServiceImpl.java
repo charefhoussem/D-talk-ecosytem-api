@@ -3,7 +3,9 @@ package com.dtalk.ecosystem.services.impl;
 import com.dtalk.ecosystem.DTOs.request.folderStyle.AddFolderStyleRequest;
 import com.dtalk.ecosystem.DTOs.request.folderStyle.ModifyFolderStyleRequest;
 import com.dtalk.ecosystem.entities.*;
+import com.dtalk.ecosystem.entities.users.FashionDesigner;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
+import com.dtalk.ecosystem.repositories.FashionDesignerRepository;
 import com.dtalk.ecosystem.repositories.FieldFolderStyleRepository;
 import com.dtalk.ecosystem.repositories.FolderStyleRepository;
 import com.dtalk.ecosystem.repositories.UserRepository;
@@ -23,6 +25,7 @@ public class FolderStyleServiceImpl implements FolderStyleService {
 
     private final UserRepository userRepository;
     private final FolderStyleRepository folderStyleRepository;
+    private final FashionDesignerRepository fashionDesignerRepository;
     private final FieldFolderStyleRepository fieldFolderStyleRepository;
     private final FileStorageService fileStorageService;
     private final EmailService emailService;
@@ -45,16 +48,16 @@ public class FolderStyleServiceImpl implements FolderStyleService {
     }
 
     @Override
-    public List<FolderStyle> retrieveAllFolderStyleByUser(Long idUser) {
-        User user = userRepository.findById(idUser)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idUser));
-        return folderStyleRepository.findFolderStyleByUserEquals(user);
+    public List<FolderStyle> retrieveAllFolderStyleByUser(Long idFashionDesigner) {
+        FashionDesigner fashionD = fashionDesignerRepository.findById(idFashionDesigner)
+                .orElseThrow(() -> new ResourceNotFoundException("Fashion designer not found with id: " + idFashionDesigner));
+        return folderStyleRepository.findFolderStylesByFashionDesignerEquals(fashionD);
     }
 
     @Override
     public FolderStyle createFolderStyle(AddFolderStyleRequest request, Long idFashionDesigner) throws IOException {
-        User user = userRepository.findById(idFashionDesigner)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idFashionDesigner));
+        FashionDesigner fashionD = fashionDesignerRepository.findById(idFashionDesigner)
+                .orElseThrow(() -> new ResourceNotFoundException("Fashion designer not found with id: " + idFashionDesigner));
 
         FolderStyle folder = new FolderStyle();
         folder.setName(request.getName());
@@ -71,7 +74,7 @@ public class FolderStyleServiceImpl implements FolderStyleService {
         Set<FieldFolderStyle> fieldFolderStyles = getOrCreateFields(request.getFields());
         folder.setFieldStyles(fieldFolderStyles);
 
-        folder.setUser(user);
+        folder.setFashionDesigner(fashionD);
         return folderStyleRepository.save(folder);
 
 
@@ -84,7 +87,7 @@ public class FolderStyleServiceImpl implements FolderStyleService {
                 .orElseThrow(() -> new ResourceNotFoundException("Folder not found with id: " + idFolderStyle));
         folder.setIsAccepted(true);
         folderStyleRepository.save(folder);
-        emailService.notification(folder.getUser().getEmail(),true,"NotificationFolderStyle","Notification Dossier de style");
+        emailService.notification(folder.getFashionDesigner().getEmail(),true,"NotificationFolderStyle","Notification Dossier de style");
 
         return true;
     }
@@ -96,7 +99,7 @@ public class FolderStyleServiceImpl implements FolderStyleService {
                 .orElseThrow(() -> new ResourceNotFoundException("folder not found with id: " + idFolderStyle));
         folder.setIsAccepted(false);
         folderStyleRepository.save(folder);
-        emailService.notification(folder.getUser().getEmail(),false,"NotificationFolderStyle","Notification Dossier de style");
+        emailService.notification(folder.getFashionDesigner().getEmail(),false,"NotificationFolderStyle","Notification Dossier de style");
 
         return true;
     }
@@ -122,7 +125,7 @@ public class FolderStyleServiceImpl implements FolderStyleService {
 
     @Override
     public FolderStyle modifyFolderStyle(ModifyFolderStyleRequest request) {
-        FolderStyle folder = folderStyleRepository.findById(request.getId()).orElseThrow(()-> new ResourceNotFoundException("dolse not found with id: " + request.getId()));
+        FolderStyle folder = folderStyleRepository.findById(request.getId()).orElseThrow(()-> new ResourceNotFoundException("folder not found with id: " + request.getId()));
         folder.setName(request.getName());
         folder.setType(request.getType());
         folder.setPrice(request.getPrice());

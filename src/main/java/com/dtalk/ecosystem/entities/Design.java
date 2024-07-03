@@ -1,6 +1,6 @@
 package com.dtalk.ecosystem.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.dtalk.ecosystem.entities.users.Designer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -15,8 +15,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name ="designs")
 
-@Table(name = "designs")
 public class Design {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,13 +53,13 @@ public class Design {
     private MultipartFile originFile;
 
     @ManyToOne
-    private User user;
+    private Designer designer;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<Tag> tags;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Field> fields;
+    private Set<FieldDesigner> fields;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "design")
     private List<Reclamation> reclamations;

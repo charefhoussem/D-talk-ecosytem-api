@@ -1,6 +1,6 @@
 package com.dtalk.ecosystem.controllers;
 
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.users.User;
 import com.dtalk.ecosystem.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

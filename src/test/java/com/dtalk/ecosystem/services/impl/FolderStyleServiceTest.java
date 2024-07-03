@@ -2,13 +2,14 @@ package com.dtalk.ecosystem.services.impl;
 import com.dtalk.ecosystem.DTOs.request.folderStyle.AddFolderStyleRequest;
 import com.dtalk.ecosystem.DTOs.request.folderStyle.ModifyFolderStyleRequest;
 
+import com.dtalk.ecosystem.entities.users.FashionDesigner;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 
 import com.dtalk.ecosystem.entities.FolderStyle;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.repositories.FashionDesignerRepository;
 import com.dtalk.ecosystem.repositories.FieldFolderStyleRepository;
 import com.dtalk.ecosystem.repositories.FolderStyleRepository;
-import com.dtalk.ecosystem.repositories.UserRepository;
+import com.dtalk.ecosystem.services.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,8 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.Mockito.*;
 public class FolderStyleServiceTest {
+
+
     @Mock
-    private UserRepository userRepository;
+    private FashionDesignerRepository fashionDesignerRepository;
 
     @Mock
     private FolderStyleRepository folderStyleRepository;
@@ -37,6 +40,8 @@ public class FolderStyleServiceTest {
 
     @Mock
     private FileStorageService fileStorageService;
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private FolderStyleServiceImpl folderStyleService;
@@ -94,14 +99,14 @@ public class FolderStyleServiceTest {
     @Test
     void testRetrieveAllFolderStyleByUser() {
         Long idUser = 1L;
-        User user = new User();
+        FashionDesigner user = new FashionDesigner();
         user.setIdUser(idUser);
 
         List<FolderStyle> folderStyles = new ArrayList<>();
         folderStyles.add(new FolderStyle());
 
-        when(userRepository.findById(idUser)).thenReturn(Optional.of(user));
-        when(folderStyleRepository.findFolderStyleByUserEquals(user)).thenReturn(folderStyles);
+        when(fashionDesignerRepository.findById(idUser)).thenReturn(Optional.of(user));
+        when(folderStyleRepository.findFolderStylesByFashionDesignerEquals(user)).thenReturn(folderStyles);
 
         List<FolderStyle> result = folderStyleService.retrieveAllFolderStyleByUser(idUser);
 
@@ -122,10 +127,10 @@ public class FolderStyleServiceTest {
         request.setFields(fields);
 
         Long idFashionDesigner = 1L;
-        User user = new User();
+        FashionDesigner user = new FashionDesigner();
         user.setIdUser(idFashionDesigner);
 
-        when(userRepository.findById(idFashionDesigner)).thenReturn(Optional.of(user));
+        when(fashionDesignerRepository.findById(idFashionDesigner)).thenReturn(Optional.of(user));
         when(fileStorageService.saveFile(originFile)).thenReturn("originFilePath");
         when(fieldFolderStyleRepository.findByTitle("Test Field")).thenReturn(Optional.empty());
 
@@ -155,10 +160,14 @@ public class FolderStyleServiceTest {
 
     @Test
     void testAcceptFolderStyle() {
+        FashionDesigner  fashionDesigner = new FashionDesigner();
+        fashionDesigner.setEmail("fashion-designer@example.com");
+
         Long idFolderStyle = 1L;
         FolderStyle folderStyle = new FolderStyle();
         folderStyle.setIdFolder(idFolderStyle);
         folderStyle.setIsAccepted(false);
+        folderStyle.setFashionDesigner(fashionDesigner);
 
         when(folderStyleRepository.findById(idFolderStyle)).thenReturn(Optional.of(folderStyle));
 
@@ -167,15 +176,21 @@ public class FolderStyleServiceTest {
         assertEquals(true, result);
         assertEquals(true, folderStyle.getIsAccepted());
         verify(folderStyleRepository, times(1)).save(folderStyle);
+
+        verify(emailService, times(1)).notification("fashion-designer@example.com", true, "NotificationFolderStyle", "Notification Dossier de style");
+
     }
 
     @Test
     void testDisacceptFolderStyle() {
+         FashionDesigner  fashionDesigner = new FashionDesigner();
+          fashionDesigner.setEmail("fashion-designer@example.com");
+
         Long idFolderStyle = 1L;
         FolderStyle folderStyle = new FolderStyle();
         folderStyle.setIdFolder(idFolderStyle);
         folderStyle.setIsAccepted(true);
-
+        folderStyle.setFashionDesigner(fashionDesigner);
         when(folderStyleRepository.findById(idFolderStyle)).thenReturn(Optional.of(folderStyle));
 
         Boolean result = folderStyleService.disacceptFolderStyle(idFolderStyle);
@@ -183,6 +198,8 @@ public class FolderStyleServiceTest {
         assertEquals(true, result);
         assertEquals(false, folderStyle.getIsAccepted());
         verify(folderStyleRepository, times(1)).save(folderStyle);
+        verify(emailService, times(1)).notification("fashion-designer@example.com", false, "NotificationFolderStyle", "Notification Dossier de style");
+
     }
 
     @Test

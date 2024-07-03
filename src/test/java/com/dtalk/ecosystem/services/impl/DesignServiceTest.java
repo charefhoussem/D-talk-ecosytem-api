@@ -1,13 +1,11 @@
 package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.entities.Design;
-import com.dtalk.ecosystem.entities.Field;
+import com.dtalk.ecosystem.entities.FieldDesigner;
 import com.dtalk.ecosystem.entities.Tag;
-import com.dtalk.ecosystem.entities.User;
-import com.dtalk.ecosystem.repositories.DesignRepository;
-import com.dtalk.ecosystem.repositories.FieldRepository;
-import com.dtalk.ecosystem.repositories.TagRepository;
-import com.dtalk.ecosystem.repositories.UserRepository;
+import com.dtalk.ecosystem.entities.users.Designer;
+import com.dtalk.ecosystem.repositories.*;
+import com.dtalk.ecosystem.services.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,17 +14,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 public class DesignServiceTest {
 
@@ -36,6 +28,8 @@ public class DesignServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private DesignerRepository designerRepository;
 
     @Mock
     private TagRepository tagRepository;
@@ -45,6 +39,9 @@ public class DesignServiceTest {
 
     @Mock
     private FileStorageService fileStorageService;
+
+    @Mock
+    private EmailService emailService;
 
     @InjectMocks
     private DesignServiceImpl designService;
@@ -93,10 +90,10 @@ public class DesignServiceTest {
         List<String> fieldTitles = new ArrayList<>();
         fieldTitles.add("TestField");
 
-        User user = new User();
-        user.setIdUser(idDesigner);
+        Designer designer = new Designer();
+        designer.setIdUser(idDesigner);
 
-        when(userRepository.findById(idDesigner)).thenReturn(Optional.of(user));
+        when(designerRepository.findById(idDesigner)).thenReturn(Optional.of(designer));
         when(fileStorageService.saveFile(imageFile)).thenReturn("imageFilePath");
         when(fileStorageService.saveFile(originFile)).thenReturn("originFilePath");
 
@@ -104,7 +101,7 @@ public class DesignServiceTest {
         tag.setName("TestTag");
         when(tagRepository.findByName("TestTag")).thenReturn(Optional.of(tag));
 
-        Field field = new Field();
+        FieldDesigner field = new FieldDesigner();
         field.setTitle("TestField");
         when(fieldRepository.findByTitle("TestField")).thenReturn(Optional.of(field));
 
@@ -119,7 +116,7 @@ public class DesignServiceTest {
         assertEquals(description, createdDesign.getDescription());
         assertEquals("imageFilePath", createdDesign.getImagePath());
         assertEquals("originFilePath", createdDesign.getOriginFilePath());
-        assertEquals(user, createdDesign.getUser());
+        assertEquals(designer, createdDesign.getDesigner());
         assertEquals(1, createdDesign.getTags().size());
         assertEquals(1, createdDesign.getFields().size());
         verify(designRepository, times(1)).save(createdDesign);
@@ -130,23 +127,33 @@ public class DesignServiceTest {
 
     @Test
     public void testAcceptDesign() {
+        Designer d = new Designer();
+        d.setEmail("fff@hhh.com");
+
         Long designId = 1L;
         Design design = new Design();
         design.setIsAccepted(false);
-
+        design.setDesigner(d);
         when(designRepository.findById(designId)).thenReturn(Optional.of(design));
 
         Boolean result = designService.acceptDesign(designId);
 
         assertTrue(result);
         assertTrue(design.getIsAccepted());
+        verify(emailService, times(1)).notification("fff@hhh.com", true, "NotificationDesignMail", "Notification Design");
+
     }
 
     @Test
     public void testDisacceptDesign() {
+
+        Designer d = new Designer();
+        d.setEmail("fff@hhh.com");
+
         Long designId = 1L;
         Design design = new Design();
         design.setIsAccepted(true);
+        design.setDesigner(d);
 
         when(designRepository.findById(designId)).thenReturn(Optional.of(design));
 
@@ -154,6 +161,8 @@ public class DesignServiceTest {
 
         assertTrue(result);
         assertFalse(design.getIsAccepted());
+        verify(emailService, times(1)).notification("fff@hhh.com", false, "NotificationDesignMail", "Notification Design");
+
     }
 @Test
 public void testPublishedDesign(){
@@ -193,7 +202,7 @@ public void testPublishedDesign(){
 public void testGetAllDesignsIsacceptedIsTrueAndIsPublishedIsTrue(){
 
     // Initialize test data
-    User testUser = new User();
+    Designer testUser = new Designer();
     testUser.setIdUser(1L);
     when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
 
@@ -202,7 +211,7 @@ public void testGetAllDesignsIsacceptedIsTrueAndIsPublishedIsTrue(){
     publishedAcceptedDesign.setName("Published and Accepted Design");
     publishedAcceptedDesign.setIsPublished(true);
     publishedAcceptedDesign.setIsAccepted(true);
-    publishedAcceptedDesign.setUser(testUser);
+    publishedAcceptedDesign.setDesigner(testUser);
 
     // Simulate the repository method
     when(designRepository.findDesignsByIsPublishedIsTrueAndIsAcceptedIsTrue())
@@ -218,32 +227,32 @@ public void testGetAllDesignsIsacceptedIsTrueAndIsPublishedIsTrue(){
 }
 
     @Test
-    public void testFindDesignsByUserEquals() {
+    public void testFindDesignsByDesignerEquals() {
 
 
         // Initialize test data
-        User testUser = new User();
+        Designer testUser = new Designer();
         testUser.setIdUser(1L);
-        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(designerRepository.findById(1L)).thenReturn(Optional.of(testUser));
 
         Design publishedAcceptedDesign = new Design();
         publishedAcceptedDesign.setIdDesign(1L);
         publishedAcceptedDesign.setName("Published and Accepted Design");
-        publishedAcceptedDesign.setUser(testUser);
+        publishedAcceptedDesign.setDesigner(testUser);
 
         Design unpublishedDesign = new Design();
         unpublishedDesign.setIdDesign(2L);
         unpublishedDesign.setName("Unpublished Design");
-        unpublishedDesign.setUser(testUser);
+        unpublishedDesign.setDesigner(testUser);
 
         Design rejectedDesign = new Design();
         rejectedDesign.setIdDesign(3L);
         rejectedDesign.setName("Rejected Design");
-        rejectedDesign.setUser(testUser);
+        rejectedDesign.setDesigner(testUser);
 
         // Mock the method findDesignsByUserEquals
         List<Design> expectedDesigns = Arrays.asList(publishedAcceptedDesign, unpublishedDesign, rejectedDesign);
-        when(designRepository.findDesignsByUserEquals(testUser)).thenReturn(expectedDesigns);
+        when(designRepository.findDesignsByDesignerEquals(testUser)).thenReturn(expectedDesigns);
 
         // Call the method under test
         List<Design> designs = designService.retrieveAllDesginByUser(testUser.getIdUser());
