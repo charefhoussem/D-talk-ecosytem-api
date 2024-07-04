@@ -27,7 +27,7 @@ public class FolderStyleController {
        return folderStyleService.retrieveAllFolderStyles();
    }
     @PreAuthorize("hasRole('FASHIONDESIGNER')")
-    @GetMapping("/user/{idUser}")
+    @GetMapping("/fashion-designer/{idUser}")
    public List<FolderStyle> getFoldersStyleByUser(@PathVariable("idUser") Long id){
      return folderStyleService.retrieveAllFolderStyleByUser(id);
    }

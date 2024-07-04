@@ -43,7 +43,7 @@ public class DesignController {
     }
     @PreAuthorize("hasRole('DESIGNER')")
 
-    @GetMapping("/user/{idDesigner}")
+    @GetMapping("/designer/{idDesigner}")
 
     public List<Design> getAllDesignByUser(@PathVariable("idDesigner") Long id){
         List<Design> designs = designService.retrieveAllDesginByUser(id);
