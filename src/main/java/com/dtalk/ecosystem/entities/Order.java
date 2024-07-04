@@ -38,6 +38,9 @@ public class Order {
     @ManyToOne
     private Brand brand;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
+    private Set<Prototype> prototypes ;
+
 
 
 }
