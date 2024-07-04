@@ -1,4 +1,4 @@
-package com.dtalk.ecosystem.DTOs.request;
+package com.dtalk.ecosystem.DTOs.request.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerifCodeRequest {
-
-    private String code;
-
+public class SigninRequest {
+    private String email;
+    private String password;
 }

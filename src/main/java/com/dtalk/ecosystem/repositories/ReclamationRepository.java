@@ -2,7 +2,7 @@ package com.dtalk.ecosystem.repositories;
 
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.Reclamation;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

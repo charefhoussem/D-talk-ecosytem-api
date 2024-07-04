@@ -1,12 +1,10 @@
 package com.dtalk.ecosystem.services.impl;
 
-import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
-import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
-import com.dtalk.ecosystem.DTOs.request.SigninRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.ChangePasswordRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.SigninRequest;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.users.User;
 import com.dtalk.ecosystem.repositories.UserRepository;
-import com.dtalk.ecosystem.services.EmailService;
 import com.dtalk.ecosystem.services.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,9 +31,6 @@ public class AuthenticationServiceTest {
     private JwtService jwtService;
 
     @Mock
-    private EmailService emailService;
-
-    @Mock
     private AuthenticationManager authenticationManager;
 
     @InjectMocks
@@ -46,57 +40,20 @@ public class AuthenticationServiceTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-/*
-    @Test
-    public void testSignup() {
-        // Given
-        SignUpRequest request = new SignUpRequest();
-        request.setName("hass");
-        request.setLastname("mrak");
-        request.setEmail("hass.mrak@test.com");
-        request.setPassword("password");
-        request.setRole("ADMIN");
 
-        // Mock UserRepository behavior
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
-            User userToSave = invocation.getArgument(0);
-            userToSave.setIdUser(1L); // Simulate saving user and generating ID
-            return userToSave;
-        });
-
-        // Mock EmailService behavior
-        doNothing().when(emailService).confirmationSignup(anyString(), anyString(), anyString());
-
-        // When
-        User savedUser = authService.signup(request);
-
-        // Then
-        assertNotNull(savedUser);
-        assertEquals("hass", savedUser.getName());
-        assertEquals("mrak", savedUser.getLastname());
-        assertEquals("hass.mrak@test.com", savedUser.getEmail());
-        assertEquals(Role.ADMIN, savedUser.getRole());
-        assertNotNull(savedUser.getCodeVerification());
-        assertFalse(savedUser.isEnabled());
-        assertFalse(savedUser.isAccountNonLocked());
-
-        verify(userRepository, times(1)).save(any(User.class));
-        verify(emailService, times(1)).confirmationSignup(anyString(), anyString(), anyString());
-    }
-*/
     @Test
     public void testSignin_ValidCredentials() {
         // Given
         SigninRequest request = new SigninRequest();
-        request.setEmail("john.doe@example.com");
+        request.setEmail("hassen.mrak@example.com");
         request.setPassword("password");
 
         User mockUser = new User();
-        mockUser.setEmail("john.doe@example.com");
+        mockUser.setEmail("hassen.mrak@example.com");
         mockUser.setPassword(passwordEncoder.encode("password"));
 
         // Mock UserRepository behavior
-        when(userRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(mockUser));
+        when(userRepository.findByEmail("hassen.mrak@example.com")).thenReturn(Optional.of(mockUser));
 
         // Mock JwtService behavior
         when(jwtService.generateToken(any(User.class))).thenReturn("mocked-jwt-token");
@@ -113,7 +70,7 @@ public class AuthenticationServiceTest {
         assertNotNull(response);
         assertEquals("mocked-jwt-token", response.getToken());
 
-        verify(userRepository, times(1)).findByEmail("john.doe@example.com");
+        verify(userRepository, times(1)).findByEmail("hassen.mrak@example.com");
         verify(jwtService, times(1)).generateToken(any(User.class));
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
     }
@@ -122,7 +79,7 @@ public class AuthenticationServiceTest {
     public void testSignin_InvalidCredentials() {
         // Given
         SigninRequest request = new SigninRequest();
-        request.setEmail("john.doe@example.com");
+        request.setEmail("hassen.mrak@example.com");
         request.setPassword("wrong-password");
 
         // Mock AuthenticationManager behavior to throw an exception

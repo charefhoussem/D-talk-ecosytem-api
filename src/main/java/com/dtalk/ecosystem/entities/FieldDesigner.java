@@ -12,7 +12,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Field {
+public class FieldDesigner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,27 +1,19 @@
 package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.entities.Design;
-import com.dtalk.ecosystem.entities.Field;
+import com.dtalk.ecosystem.entities.FieldDesigner;
 import com.dtalk.ecosystem.entities.Tag;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.users.Designer;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
-import com.dtalk.ecosystem.repositories.DesignRepository;
-import com.dtalk.ecosystem.repositories.FieldRepository;
-import com.dtalk.ecosystem.repositories.TagRepository;
-import com.dtalk.ecosystem.repositories.UserRepository;
+import com.dtalk.ecosystem.repositories.*;
 import com.dtalk.ecosystem.services.DesignService;
+import com.dtalk.ecosystem.services.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.*;
 
 @Service
@@ -31,7 +23,8 @@ public class DesignServiceImpl implements DesignService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final FieldRepository fieldRepository;
-
+    private final EmailService emailService;
+    private final DesignerRepository designerRepository;
     private FileStorageService fileStorageService;
     @Override
     public Design getDesignById(Long idDesign) {
@@ -49,10 +42,10 @@ public class DesignServiceImpl implements DesignService {
      }
 
      @Override
-     public List<Design> retrieveAllDesginByUser(Long idUser) {
-         User user = userRepository.findById(idUser)
-                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idUser));
-         return designRepository.findDesignsByUserEquals(user);
+     public List<Design> retrieveAllDesginByUser(Long idDesigner) {
+         Designer designer = designerRepository.findById(idDesigner)
+                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
+         return designRepository.findDesignsByDesignerEquals(designer);
     }
 
 
@@ -64,8 +57,8 @@ public class DesignServiceImpl implements DesignService {
         design.setPrice(price);
         design.setIsAccepted(false);
         design.setIsPublished(false);
-        User user = userRepository.findById(idDesigner).get();
-        design.setUser(user);
+        Designer designer = designerRepository.findById(idDesigner).get();
+        design.setDesigner(designer);
         String imageFileName = fileStorageService.saveFile(imageFile);
         design.setImagePath(imageFileName);
 
@@ -75,7 +68,7 @@ public class DesignServiceImpl implements DesignService {
         Set<Tag> tags = getOrCreateTags(tagNames);
         design.setTags(tags);
 
-        Set<Field> fields = getOrCreateFields(fieldTitles);
+        Set<FieldDesigner> fields = getOrCreateFields(fieldTitles);
         design.setFields(fields);
         return designRepository.save(design);
     }
@@ -86,6 +79,8 @@ public class DesignServiceImpl implements DesignService {
             .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(true);
         designRepository.save(design);
+        emailService.notification(design.getDesigner().getEmail(),true,"NotificationDesignMail","Notification Design");
+
         return true;
     }
 
@@ -95,6 +90,9 @@ public class DesignServiceImpl implements DesignService {
                 .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(false);
         designRepository.save(design);
+
+        emailService.notification(design.getDesigner().getEmail(),false,"NotificationDesignMail","Notification Design");
+
         return true;
     }
 
@@ -128,7 +126,7 @@ public class DesignServiceImpl implements DesignService {
         design.setTags(tags);
 
 
-        Set<Field> fields = getOrCreateFields(fieldTitles);
+        Set<FieldDesigner> fields = getOrCreateFields(fieldTitles);
         design.setFields(fields);
         return designRepository.save(design);
     }
@@ -155,11 +153,11 @@ public class DesignServiceImpl implements DesignService {
         return tags;
     }
 
-    private Set<Field> getOrCreateFields(List<String> FieldTitles) {
-        Set<Field> fields = new HashSet<>();
+    private Set<FieldDesigner> getOrCreateFields(List<String> FieldTitles) {
+        Set<FieldDesigner> fields = new HashSet<>();
         for (String fieldTitle : FieldTitles) {
-            Field fild = fieldRepository.findByTitle(fieldTitle)
-                    .orElseGet(() -> Field.builder().title(fieldTitle).build());
+            FieldDesigner fild = fieldRepository.findByTitle(fieldTitle)
+                    .orElseGet(() -> FieldDesigner.builder().title(fieldTitle).build());
             fields.add(fild);
         }
         return fields;

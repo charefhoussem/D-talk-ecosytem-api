@@ -1,25 +1,31 @@
-package com.dtalk.ecosystem.DTOs.request;
+package com.dtalk.ecosystem.DTOs.request.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpRequest {
+public class SignUpBrandRequest {
     private String name;
-    private String lastname;
     private String email;
     private String password;
     private String role;
     private String country;
     private String countryCode;
     private String phone;
-    private String description;
-    private String instagramUrl;
+    private int BrandAge;
+    private MultipartFile imageFile;
+
+    private List<String> productionTypes;
+
+
 
 
 }

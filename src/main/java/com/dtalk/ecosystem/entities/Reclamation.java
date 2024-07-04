@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.entities;
 
+import com.dtalk.ecosystem.entities.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -12,6 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name ="reclamations")
+
 public class Reclamation {
 
     @Id
@@ -36,4 +39,8 @@ public class Reclamation {
     @ManyToOne
     @JoinColumn(name = "design_id", nullable = false)
     private Design design;
+
+    @ManyToOne
+    @JoinColumn(name = "folderStyle_id", nullable = false)
+    private FolderStyle folderStyle;
 }

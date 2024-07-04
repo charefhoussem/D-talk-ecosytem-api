@@ -1,15 +1,14 @@
 package com.dtalk.ecosystem.controllers;
 
-import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
-import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
-import com.dtalk.ecosystem.DTOs.request.SigninRequest;
-import com.dtalk.ecosystem.DTOs.request.VerifCodeRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.*;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.users.Admin;
+import com.dtalk.ecosystem.entities.users.Brand;
+import com.dtalk.ecosystem.entities.users.Designer;
+import com.dtalk.ecosystem.entities.users.FashionDesigner;
 import com.dtalk.ecosystem.response.ResponseHandler;
 import com.dtalk.ecosystem.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +24,72 @@ import java.util.Map;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<User> signup(
+    @PostMapping("/signup-designer")
+    public ResponseEntity<Designer> signupDesigner(
             @RequestParam("name") String name,
             @RequestParam("lastname") String lastname,
             @RequestParam("email") String email,
             @RequestParam("password") String password,
-            @RequestParam("role") String role,
+            @RequestParam("country") String country,
+            @RequestParam("countryCode") String countryCode,
+            @RequestParam("phone") String phone,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            @RequestParam("description") String description,
+            @RequestParam("instagram") String instagram
+
+            ) throws IOException {
+        SignUpDesignerAndFashionRequest signUpDesignerRequest = new SignUpDesignerAndFashionRequest();
+        signUpDesignerRequest.setName(name);
+        signUpDesignerRequest.setLastname(lastname);
+        signUpDesignerRequest.setEmail(email);
+        signUpDesignerRequest.setPassword(password);
+        signUpDesignerRequest.setCountry(country);
+        signUpDesignerRequest.setCountryCode(countryCode);
+        signUpDesignerRequest.setPhone(phone);
+        signUpDesignerRequest.setImageFile(imageFile);
+        signUpDesignerRequest.setInstagramUrl(instagram);
+        signUpDesignerRequest.setDescription(description);
+
+        return ResponseEntity.ok(authenticationService.signupDesigner(signUpDesignerRequest));
+    }
+
+
+    @PostMapping("/signup-fashion-designer")
+    public ResponseEntity<FashionDesigner> signupFashionDesigner(
+            @RequestParam("name") String name,
+            @RequestParam("lastname") String lastname,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("country") String country,
+            @RequestParam("countryCode") String countryCode,
+            @RequestParam("phone") String phone,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            @RequestParam("description") String description,
+            @RequestParam("instagram") String instagram
+
+    ) throws IOException {
+        SignUpDesignerAndFashionRequest signUpFDesignerRequest = new SignUpDesignerAndFashionRequest();
+        signUpFDesignerRequest.setName(name);
+        signUpFDesignerRequest.setLastname(lastname);
+        signUpFDesignerRequest.setEmail(email);
+        signUpFDesignerRequest.setPassword(password);
+        signUpFDesignerRequest.setCountry(country);
+        signUpFDesignerRequest.setCountryCode(countryCode);
+        signUpFDesignerRequest.setPhone(phone);
+        signUpFDesignerRequest.setImageFile(imageFile);
+        signUpFDesignerRequest.setInstagramUrl(instagram);
+        signUpFDesignerRequest.setDescription(description);
+
+        return ResponseEntity.ok(authenticationService.signupFashionDesigner(signUpFDesignerRequest));
+    }
+
+
+    @PostMapping("/signup-admin")
+    public ResponseEntity<Admin> signupAdmin(
+            @RequestParam("name") String name,
+            @RequestParam("lastname") String lastname,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
             @RequestParam("country") String country,
             @RequestParam("countryCode") String countryCode,
             @RequestParam("phone") String phone,
@@ -40,19 +98,49 @@ public class AuthenticationController {
             @RequestParam("instagram") String instagramUrl,
             @RequestParam("imageFile") MultipartFile imageFile
 
-            ) throws IOException {
-        SignUpRequest signUpRequest = new SignUpRequest();
-        signUpRequest.setName(name);
-        signUpRequest.setLastname(lastname);
-        signUpRequest.setEmail(email);
-        signUpRequest.setPassword(password);
-        signUpRequest.setRole(role);
-        signUpRequest.setCountry(country);
-        signUpRequest.setCountryCode(countryCode);
-        signUpRequest.setPhone(phone);
-        signUpRequest.setDescription(description);
-        signUpRequest.setInstagramUrl(instagramUrl);
-        return ResponseEntity.ok(authenticationService.signup(signUpRequest,imageFile));
+
+
+    ) throws IOException {
+        SignUpAdminRequest signUpAdminRequest = new SignUpAdminRequest();
+        signUpAdminRequest.setName(name);
+        signUpAdminRequest.setLastname(lastname);
+        signUpAdminRequest.setEmail(email);
+        signUpAdminRequest.setPassword(password);
+        signUpAdminRequest.setCountry(country);
+        signUpAdminRequest.setCountryCode(countryCode);
+        signUpAdminRequest.setPhone(phone);
+        signUpAdminRequest.setImageFile(imageFile);
+
+
+        return ResponseEntity.ok(authenticationService.signupAdmin(signUpAdminRequest));
+    }
+
+
+    @PostMapping("/signup-brand")
+    public ResponseEntity<Brand> signupBrand(
+            @RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("country") String country,
+            @RequestParam("countryCode") String countryCode,
+            @RequestParam("phone") String phone,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            @RequestParam("brandAge") int brandAge,
+            @RequestParam("productionTypes") List<String> productionTypes
+
+    ) throws IOException {
+        SignUpBrandRequest signBrandRequest = new SignUpBrandRequest();
+        signBrandRequest.setName(name);
+        signBrandRequest.setEmail(email);
+        signBrandRequest.setPassword(password);
+        signBrandRequest.setCountry(country);
+        signBrandRequest.setCountryCode(countryCode);
+        signBrandRequest.setPhone(phone);
+        signBrandRequest.setImageFile(imageFile);
+        signBrandRequest.setBrandAge(brandAge);
+        signBrandRequest.setProductionTypes(productionTypes);
+
+        return ResponseEntity.ok(authenticationService.signupBrand(signBrandRequest));
     }
 
     @PostMapping("/signin")
