@@ -1,46 +1,56 @@
 package com.dtalk.ecosystem.services.impl;
 
-import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
-import com.dtalk.ecosystem.DTOs.request.SignUpRequest;
-import com.dtalk.ecosystem.DTOs.request.SigninRequest;
+import com.dtalk.ecosystem.DTOs.request.authentication.*;
 import com.dtalk.ecosystem.DTOs.response.JwtAuthenticationResponse;
-import com.dtalk.ecosystem.entities.Role;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.*;
+import com.dtalk.ecosystem.entities.users.*;
 import com.dtalk.ecosystem.exceptions.ResourceInvalidException;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 import com.dtalk.ecosystem.exceptions.TokenExpiredException;
 import com.dtalk.ecosystem.exceptions.UserAlreadyExistsException;
-import com.dtalk.ecosystem.repositories.UserRepository;
+import com.dtalk.ecosystem.repositories.*;
 import com.dtalk.ecosystem.services.AuthenticationService;
 import com.dtalk.ecosystem.services.EmailService;
 import com.dtalk.ecosystem.services.JwtService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 
 public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
+    private final FashionDesignerRepository fashionDesignerRepository;
+    private final BrandRepository brandRepository;
+    private final DesignerRepository designerRepository;
+    private final ProductionTypeRepository productionTypeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
     private FileStorageService fileStorageService;
 
+    @Autowired
+    public void setFileStorageService(FileStorageService fileStorageService) {
+        this.fileStorageService = fileStorageService;
+    }
     @Override
-    public User signup(SignUpRequest request, MultipartFile imageFile) throws IOException {
+    public Designer signupDesigner(SignUpDesignerAndFashionRequest request) throws IOException {
         // Vérifier si l'utilisateur existe déjà
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists");
@@ -48,20 +58,127 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String codeVerification = VerificationCodeGenerateService.generateCode();
 
-        var user = User.builder().name(request.getName()).lastname(request.getLastname())
-                .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.valueOf(request.getRole())).codeVerification(codeVerification).enable(false).locked(false).country(request.getCountry()).countryCode(request.getCountryCode()).phone(request.getPhone()).build();
+        Designer d = new Designer();
+        d.setName(request.getName());
+        d.setLastname(request.getLastname());
+        d.setEmail(request.getEmail());
+        d.setPassword(passwordEncoder.encode(request.getPassword()));
+        d.setRole(Role.valueOf("DESIGNER"));
+        d.setCodeVerification(codeVerification);
+        d.setEnable(false);
+        d.setLocked(false);
+        d.setCountry(request.getCountry());
+        d.setCountryCode(request.getCountryCode());
+        d.setPhone(request.getPhone());
+        d.setInstagramUrl(request.getInstagramUrl());
+        d.setDescription(request.getDescription());
 
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String imageUrl = fileStorageService.saveFile(imageFile);
-            user.setImageUrl(imageUrl);
-        }
+            String imageUrl = fileStorageService.saveFile(request.getImageFile());
+            d.setImageUrl(imageUrl);
 
-        userRepository.save(user);
-        emailService.confirmationSignup(user.getEmail(),"Code Verification",codeVerification);
-        return user;
+
+        designerRepository.save(d);
+        emailService.confirmationSignup(d.getEmail(),"Code Verification",codeVerification);
+        return d;
 
     }
+
+    @Override
+    public FashionDesigner signupFashionDesigner(SignUpDesignerAndFashionRequest request) throws IOException {
+        // Vérifier si l'utilisateur existe déjà
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists");
+        }
+
+        String codeVerification = VerificationCodeGenerateService.generateCode();
+
+        FashionDesigner fd = new FashionDesigner();
+        fd.setName(request.getName());
+        fd.setLastname(request.getLastname());
+        fd.setEmail(request.getEmail());
+        fd.setPassword(passwordEncoder.encode(request.getPassword()));
+        fd.setRole(Role.valueOf("FASHIONDESIGNER"));
+        fd.setCodeVerification(codeVerification);
+        fd.setEnable(false);
+        fd.setLocked(false);
+        fd.setCountry(request.getCountry());
+        fd.setCountryCode(request.getCountryCode());
+        fd.setPhone(request.getPhone());
+        fd.setInstagramUrl(request.getInstagramUrl());
+        fd.setDescription(request.getDescription());
+
+        String imageUrl = fileStorageService.saveFile(request.getImageFile());
+        fd.setImageUrl(imageUrl);
+
+
+        fashionDesignerRepository.save(fd);
+        emailService.confirmationSignup(fd.getEmail(),"Code Verification",codeVerification);
+        return fd;
+    }
+
+    @Override
+    public Brand signupBrand(SignUpBrandRequest request) throws IOException {
+        // Vérifier si l'utilisateur existe déjà
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists");
+        }
+
+        String codeVerification = VerificationCodeGenerateService.generateCode();
+
+        Brand b = new Brand();
+        b.setName(request.getName());
+        b.setEmail(request.getEmail());
+        b.setPassword(passwordEncoder.encode(request.getPassword()));
+        b.setRole(Role.valueOf("BRAND"));
+        b.setCodeVerification(codeVerification);
+        b.setEnable(false);
+        b.setLocked(false);
+        b.setCountry(request.getCountry());
+        b.setCountryCode(request.getCountryCode());
+        b.setPhone(request.getPhone());
+
+        String imageUrl = fileStorageService.saveFile(request.getImageFile());
+        b.setImageUrl(imageUrl);
+        b.setBrandAge(request.getBrandAge());
+        Set<ProductionType> prodTypes = getOrCreateProductionType(request.getProductionTypes());
+        b.setProductionTypes(prodTypes);
+
+        brandRepository.save(b);
+        emailService.confirmationSignup(b.getEmail(),"Code Verification",codeVerification);
+        return b;
+    }
+
+    @Override
+    public Admin signupAdmin(SignUpAdminRequest request) throws IOException {
+
+        // Vérifier si l'utilisateur existe déjà
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User with email " + request.getEmail() + " already exists");
+        }
+
+        String codeVerification = VerificationCodeGenerateService.generateCode();
+
+        Admin ad = new Admin();
+        ad.setName(request.getName());
+        ad.setLastname(request.getLastname());
+        ad.setEmail(request.getEmail());
+        ad.setPassword(passwordEncoder.encode(request.getPassword()));
+        ad.setRole(Role.valueOf("ADMIN"));
+        ad.setCodeVerification(codeVerification);
+        ad.setEnable(false);
+        ad.setLocked(false);
+        ad.setCountry(request.getCountry());
+        ad.setCountryCode(request.getCountryCode());
+        ad.setPhone(request.getPhone());
+
+
+        String imageUrl = fileStorageService.saveFile(request.getImageFile());
+        ad.setImageUrl(imageUrl);
+
+
+        adminRepository.save(ad);
+        emailService.confirmationSignup(ad.getEmail(),"Code Verification",codeVerification);
+        return ad;    }
 
     @Override
     public JwtAuthenticationResponse signin(SigninRequest request) throws BadCredentialsException {
@@ -165,6 +282,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String encodedPassword = passwordEncoder.encode(request.getNewPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
+    }
+
+    private Set<ProductionType> getOrCreateProductionType(List<String> prTypes) {
+        Set<ProductionType> productionTypes = new HashSet<>();
+        for (String prodType : prTypes) {
+            ProductionType prt = productionTypeRepository.findAllByType(prodType)
+                    .orElseGet(() -> ProductionType.builder().type(prodType).build());
+            productionTypes.add(prt);
+        }
+        return productionTypes;
     }
 
 

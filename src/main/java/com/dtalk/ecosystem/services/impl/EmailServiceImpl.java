@@ -47,6 +47,19 @@ public class EmailServiceImpl implements EmailService {
         sendHtmlMessage(to, "Mot de passe oublié", htmlContent);
     }
 
+    @Override
+    public void notification(String to, Boolean accepted, String template,String subject) {
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("accepted", accepted);
+
+        Context context = new Context();
+        context.setVariables(templateModel);
+        String htmlContent = templateEngine.process(template, context);
+
+        sendHtmlMessage(to, subject, htmlContent);
+    }
+
+
     private void sendHtmlMessage(String to, String subject, String htmlBody) {
         MimeMessage message = mailSender.createMimeMessage();
         try {

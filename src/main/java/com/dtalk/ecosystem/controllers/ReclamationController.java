@@ -1,6 +1,6 @@
 package com.dtalk.ecosystem.controllers;
 
-import com.dtalk.ecosystem.DTOs.request.ReclamationRequest;
+import com.dtalk.ecosystem.DTOs.request.reclamation.ReclamationRequest;
 import com.dtalk.ecosystem.entities.Reclamation;
 import com.dtalk.ecosystem.response.ResponseHandler;
 import com.dtalk.ecosystem.services.ReclamationService;

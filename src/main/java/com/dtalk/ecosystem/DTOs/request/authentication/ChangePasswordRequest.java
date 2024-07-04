@@ -1,9 +1,7 @@
-package com.dtalk.ecosystem.DTOs.request;
+package com.dtalk.ecosystem.DTOs.request.authentication;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class ChangePasswordRequest {

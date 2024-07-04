@@ -1,7 +1,7 @@
 package com.dtalk.ecosystem.repositories;
 
 import com.dtalk.ecosystem.entities.Role;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

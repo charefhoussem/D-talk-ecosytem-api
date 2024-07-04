@@ -1,21 +1,15 @@
 package com.dtalk.ecosystem.services.impl;
 
-import com.dtalk.ecosystem.DTOs.request.ChangePasswordRequest;
 import com.dtalk.ecosystem.entities.Role;
-import com.dtalk.ecosystem.entities.User;
+import com.dtalk.ecosystem.entities.users.*;
 import com.dtalk.ecosystem.exceptions.ResourceInvalidException;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
-import com.dtalk.ecosystem.exceptions.UserAlreadyExistsException;
-import com.dtalk.ecosystem.repositories.UserRepository;
+import com.dtalk.ecosystem.repositories.*;
 import com.dtalk.ecosystem.services.UserService;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.utility.RandomString;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +18,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final BrandRepository brandRepository;
+    private final FashionDesignerRepository fashionDesignerRepository;
+    private final AdminRepository adminRepository;
+    private final DesignerRepository designerRepository;
 
     @Override
     public UserDetailsService userDetailsService() {
@@ -51,10 +49,25 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public List<Designer> retrieveAllDesigners() {
+        return designerRepository.findAll();
+    }
 
+    @Override
+    public List<Brand> retrieveAllBrands() {
+        return brandRepository.findAll();
+    }
 
+    @Override
+    public List<FashionDesigner> retrieveAllFashionDesigners() {
+        return fashionDesignerRepository.findAll();
+    }
 
-
+    @Override
+    public List<Admin> retrieveAllAdmins() {
+        return adminRepository.findAll();
+    }
 
 
 }
