@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.entities;
 
+import com.dtalk.ecosystem.entities.enumiration.EtatPrototype;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,13 @@ public class Prototype {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private Boolean isValid;
+    private Boolean isValid = false;
+
+    @Enumerated(EnumType.STRING)
+    private EtatPrototype etat = EtatPrototype.RECEIVED;
+
+    private String description;
+
     @ManyToOne
     private Order order;
 }

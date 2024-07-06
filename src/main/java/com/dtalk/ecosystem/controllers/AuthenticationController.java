@@ -94,8 +94,6 @@ public class AuthenticationController {
             @RequestParam("countryCode") String countryCode,
             @RequestParam("phone") String phone,
 
-            @RequestParam("description") String description,
-            @RequestParam("instagram") String instagramUrl,
             @RequestParam("imageFile") MultipartFile imageFile
 
 

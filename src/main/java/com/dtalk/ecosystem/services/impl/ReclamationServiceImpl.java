@@ -31,7 +31,7 @@ public class ReclamationServiceImpl implements ReclamationService {
 
         LocalDateTime date = LocalDateTime.now();
 
-        Reclamation reclamation = Reclamation.builder().description(request.getDescription()).etat("non traité").date(date).user(user).design(design).build();
+        Reclamation reclamation = Reclamation.builder().description(request.getDescription()).date(date).user(user).design(design).build();
         return reclamationRepository.save(reclamation);
     }
 

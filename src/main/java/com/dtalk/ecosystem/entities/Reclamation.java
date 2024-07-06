@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.entities;
 
+import com.dtalk.ecosystem.entities.enumiration.EtatReclamation;
 import com.dtalk.ecosystem.entities.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -30,7 +31,8 @@ public class Reclamation {
     private LocalDateTime date;
 
     @NotBlank(message = "etat is mandatory")
-    private String etat;
+    @Enumerated(EnumType.STRING)
+    private EtatReclamation etat = EtatReclamation.RECEIVED;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

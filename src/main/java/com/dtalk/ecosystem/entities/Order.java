@@ -1,10 +1,11 @@
 package com.dtalk.ecosystem.entities;
 
+import com.dtalk.ecosystem.entities.enumiration.EtatOrder;
 import com.dtalk.ecosystem.entities.users.Brand;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -19,14 +20,16 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idOrder;
 
-    private Date date;
+    private LocalDateTime date = LocalDateTime.now();
 
-    private Double amount;
+    private Boolean isValid = false;
+
+    private Double amount = 0.0;
 
     @Enumerated(EnumType.STRING)
-    private EtatOrder etat;
+    private EtatOrder etat = EtatOrder.PROTOTYPING;
 
-    private int quantity;
+    private int quantity = 0;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
     private Set<FolderStyle> folderStyles ;
