@@ -28,7 +28,7 @@ public class Reclamation {
     private String description;
 
     @NotNull(message = "Date is mandatory")
-    private LocalDateTime date;
+    private LocalDateTime date = LocalDateTime.now();
 
     @NotBlank(message = "etat is mandatory")
     @Enumerated(EnumType.STRING)

@@ -31,11 +31,11 @@ public class Order {
 
     private int quantity = 0;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
-    private Set<FolderStyle> folderStyles ;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<FolderStyle> folderStyles;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
-    private Set<Design> designs ;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Set<Design> designs;
 
 
     @ManyToOne

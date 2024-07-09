@@ -29,9 +29,8 @@ public class ReclamationServiceImpl implements ReclamationService {
         User user = userRepository.findById(idUser)
                 .orElseThrow(() -> new ResourceNotFoundException("user not found with id: " + idUser));
 
-        LocalDateTime date = LocalDateTime.now();
 
-        Reclamation reclamation = Reclamation.builder().description(request.getDescription()).date(date).user(user).design(design).build();
+        Reclamation reclamation = Reclamation.builder().description(request.getDescription()).user(user).design(design).build();
         return reclamationRepository.save(reclamation);
     }
 

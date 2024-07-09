@@ -55,8 +55,6 @@ public class ReclamationServiceTest {
 
         Reclamation reclamation = Reclamation.builder()
                 .description(request.getDescription())
-                .etat("non traité")
-                .date(LocalDateTime.now())
                 .user(user)
                 .design(design)
                 .build();
@@ -67,7 +65,7 @@ public class ReclamationServiceTest {
 
         assertNotNull(result);
         assertEquals(request.getDescription(), result.getDescription());
-        assertEquals("non traité", result.getEtat());
+        assertEquals("RECEIVED", result.getEtat());
         assertEquals(user, result.getUser());
         assertEquals(design, result.getDesign());
 
