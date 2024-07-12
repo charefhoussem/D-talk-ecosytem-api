@@ -44,6 +44,8 @@ public class Order {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
     private Set<Prototype> prototypes = new HashSet<>() ;
+    @OneToMany(cascade = CascadeType.ALL , mappedBy = "order")
+    private Set<LivraisonProduction> livraisonProductions = new HashSet<>();
 
 
 

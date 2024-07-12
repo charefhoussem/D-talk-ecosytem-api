@@ -24,29 +24,28 @@ public class Reclamation {
 
 
 
-    @NotBlank(message = "Description is mandatory")
+   // @NotBlank(message = "Description is mandatory")
     private String description;
 
-    @NotNull(message = "Date is mandatory")
+    //@NotNull(message = "Date is mandatory")
     private LocalDateTime date = LocalDateTime.now();
 
-    @NotBlank(message = "etat is mandatory")
     @Enumerated(EnumType.STRING)
     private EtatReclamation etat = EtatReclamation.RECEIVED;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "design_id", nullable = false)
+    @JoinColumn(name = "design_id")
     private Design design;
 
     @ManyToOne
-    @JoinColumn(name = "folderStyle_id", nullable = false)
+    @JoinColumn(name = "folderStyle_id")
     private FolderStyle folderStyle;
 
     @ManyToOne
-    @JoinColumn(name = "prototype_id", nullable = false)
+    @JoinColumn(name = "prototype_id")
     private Prototype prototype;
 }
