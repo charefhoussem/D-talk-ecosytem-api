@@ -8,12 +8,7 @@ import com.dtalk.ecosystem.repositories.*;
 import com.dtalk.ecosystem.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -31,10 +26,8 @@ public class OrderServiceImpl implements OrderService {
        Design design = designRepository.findById(idDesign).orElseThrow(()-> new ResourceNotFoundException("design not found : "+ idDesign));
        Order nOrder = new Order();
        nOrder.setBrand(brand);
-       Set<Design> ld = new HashSet<>();
-       ld.add(design);
-       nOrder.setDesigns(ld);
-        return orderRepository.save(nOrder);
+       nOrder.getDesigns().add(design);
+       return orderRepository.save(nOrder);
     }
 
     @Override
@@ -44,8 +37,8 @@ public class OrderServiceImpl implements OrderService {
 
         Order nOrder = new Order();
         nOrder.setBrand(brand);
-        Set<FolderStyle> lf = new HashSet<>();
-        lf.add(folderStyle);
+
+        nOrder.getFolderStyles().add(folderStyle);
         nOrder.setIsValid(true);
         Order order = orderRepository.save(nOrder);
         // prototype

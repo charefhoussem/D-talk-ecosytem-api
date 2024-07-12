@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +19,19 @@ import java.util.List;
 public class ReclamationController {
 
     private final ReclamationService reclamationService;
-   @PostMapping("/add/{idUser}/{idDesign}")
-    public ResponseEntity<Reclamation> saveReclamation(@Valid @RequestBody ReclamationRequest request, @PathVariable("idUser") Long idUser,@PathVariable("idDesign") Long idDesign){
-       return ResponseEntity.ok(reclamationService.addReclamation(request,idUser,idDesign));
+   @PostMapping("/add/design/{idUser}/{idDesign}")
+    public ResponseEntity<Reclamation> saveReclamationDesign(@Valid @RequestBody ReclamationRequest request, @PathVariable("idUser") Long idUser,@PathVariable("idDesign") Long idDesign){
+       return ResponseEntity.ok(reclamationService.addReclamationDesign(request,idUser,idDesign));
+    }
+
+    @PostMapping("/add/folder/{idUser}/{idFolder}")
+    public ResponseEntity<Reclamation> saveReclamationFolder(@Valid @RequestBody ReclamationRequest request, @PathVariable("idUser") Long idUser,@PathVariable("idFolder") Long idFolder){
+        return ResponseEntity.ok(reclamationService.addReclamationFolderStyle(request,idUser,idFolder));
+    }
+    @PreAuthorize("hasRole('BRAND')")
+    @PostMapping("/add/prototype/{idUser}/{idPrototype}")
+    public ResponseEntity<Reclamation> saveReclamationPrototype(@Valid @RequestBody ReclamationRequest request, @PathVariable("idUser") Long idUser,@PathVariable("idPrototype") Long idPrototype){
+        return ResponseEntity.ok(reclamationService.addReclamationPrototype(request,idUser,idPrototype));
     }
 
     @GetMapping("/{idReclamation}")

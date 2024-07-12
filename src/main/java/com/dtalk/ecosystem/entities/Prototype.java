@@ -4,6 +4,8 @@ import com.dtalk.ecosystem.entities.enumiration.EtatPrototype;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -22,7 +24,7 @@ public class Prototype {
     @Enumerated(EnumType.STRING)
     private EtatPrototype etat = EtatPrototype.RECEIVED;
 
-    private String description;
+    private LocalDateTime date = LocalDateTime.now();
 
     @ManyToOne
     private Order order;

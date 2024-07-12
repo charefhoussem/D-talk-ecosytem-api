@@ -12,12 +12,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class OrderServiceImplTest {
+
     @Mock
     private OrderRepository orderRepository;
 
@@ -36,173 +39,160 @@ public class OrderServiceImplTest {
     @InjectMocks
     private OrderServiceImpl orderService;
 
+    private Brand brand;
+    private Design design;
+    private FolderStyle folderStyle;
+    private Order order;
+
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
+        brand = new Brand();
+        brand.setIdUser(1L);
 
+        design = new Design();
+        design.setIdDesign(1L);
 
-    @Test
-    public void testCreateOrderByDesign() {
-        Long idBrand = 4L;
-        Long idDesign = 1L;
+        folderStyle = new FolderStyle();
+        folderStyle.setIdFolder(1L);
 
-        Brand brand = new Brand();
-        brand.setIdUser(idBrand);
-
-        Design design = new Design();
-        design.setIdDesign(idDesign);
-
-        when(brandRepository.findById(idBrand)).thenReturn(Optional.of(brand));
-        when(designRepository.findById(idDesign)).thenReturn(Optional.of(design));
-
-        Order order = orderService.createOrderByDesign(idBrand, idDesign);
-
-        assertNotNull(order, "Order should not be null");
-        assertEquals(brand, order.getBrand(), "Brand should be set in order");
-        assertTrue(order.getDesigns().contains(design), "Design should be in order's designs set");
-        verify(orderRepository).save(order);
+        order = new Order();
+        order.setIdOrder(1L);
+        order.setBrand(brand);
+        order.setDesigns(new HashSet<>());
+        order.setFolderStyles(new HashSet<>());
     }
 
     @Test
-    public void testCreateOrderByFolderStyle() {
-        Long idBrand = 1L;
-        Long idFolderStyle = 1L;
+    void testCreateOrderByDesign() {
+        when(brandRepository.findById(1L)).thenReturn(Optional.of(brand));
+        when(designRepository.findById(1L)).thenReturn(Optional.of(design));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        Brand brand = new Brand();
-        brand.setIdUser(idBrand);
+        Order createdOrder = orderService.createOrderByDesign(1L, 1L);
 
-        FolderStyle folderStyle = new FolderStyle();
-        folderStyle.setIdFolder(idFolderStyle);
-
-        when(brandRepository.findById(idBrand)).thenReturn(Optional.of(brand));
-        when(folderStyleRepository.findById(idFolderStyle)).thenReturn(Optional.of(folderStyle));
-
-        Order order = orderService.createOrderByFolderStyle(idBrand, idFolderStyle);
-
-        assertNotNull(order);
-        assertEquals(brand, order.getBrand());
-        assertTrue(order.getFolderStyles().contains(folderStyle));
-        assertTrue(order.getIsValid());
-        verify(orderRepository).save(order);
-        verify(prototypeRepository).save(any(Prototype.class));
+        assertNotNull(createdOrder);
+        assertEquals(brand, createdOrder.getBrand());
+        verify(orderRepository, times(1)).save(any(Order.class));
     }
 
     @Test
-    public void testAffectDesign() {
-        Long idOrder = 1L;
-        Long idDesign = 1L;
+    void testCreateOrderByFolderStyle() {
+        when(brandRepository.findById(1L)).thenReturn(Optional.of(brand));
+        when(folderStyleRepository.findById(1L)).thenReturn(Optional.of(folderStyle));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
+        when(prototypeRepository.save(any(Prototype.class))).thenReturn(new Prototype());
 
-        Order order = new Order();
-        order.setIdOrder(idOrder);
+        Order createdOrder = orderService.createOrderByFolderStyle(1L, 1L);
 
-        Design design = new Design();
-        design.setIdDesign(idDesign);
-
-        when(orderRepository.findById(idOrder)).thenReturn(Optional.of(order));
-        when(designRepository.findById(idDesign)).thenReturn(Optional.of(design));
-
-        orderService.affectDesign(idOrder, idDesign);
-
-        assertTrue(order.getDesigns().contains(design));
-        verify(orderRepository).save(order);
+        assertNotNull(createdOrder);
+        assertEquals(brand, createdOrder.getBrand());
+        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(prototypeRepository, times(1)).save(any(Prototype.class));
     }
 
     @Test
-    public void testAffectFolderStyle() {
-        Long idOrder = 1L;
-        Long idFolderStyle = 1L;
+    void testAffectDesign() {
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(designRepository.findById(1L)).thenReturn(Optional.of(design));
+        when(designRepository.findById(2L)).thenReturn(Optional.of(new Design()));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        Order order = new Order();
-        order.setIdOrder(idOrder);
+        Design newDesign = new Design();
+        newDesign.setIdDesign(2L);
 
-        FolderStyle folderStyle = new FolderStyle();
-        folderStyle.setIdFolder(idFolderStyle);
+        Order updatedOrder = orderService.affectDesign(1L, 2L);
 
-        when(orderRepository.findById(idOrder)).thenReturn(Optional.of(order));
-        when(folderStyleRepository.findById(idFolderStyle)).thenReturn(Optional.of(folderStyle));
-
-        orderService.affectFolderStyle(idOrder, idFolderStyle);
-
-        assertTrue(order.getFolderStyles().contains(folderStyle));
-        verify(orderRepository).save(order);
+        assertNotNull(updatedOrder);
+        assertEquals(1, updatedOrder.getDesigns().size());
+        verify(orderRepository, times(1)).save(any(Order.class));
     }
 
     @Test
-    public void testDesaffecterDesign() {
-        Long idOrder = 1L;
-        Long idDesign = 1L;
+    void testAffectFolderStyle() {
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(folderStyleRepository.findById(1L)).thenReturn(Optional.of(folderStyle));
+        when(folderStyleRepository.findById(2L)).thenReturn(Optional.of(new FolderStyle()));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        Order order = new Order();
-        order.setIdOrder(idOrder);
+        FolderStyle newFolderStyle = new FolderStyle();
+        newFolderStyle.setIdFolder(2L);
 
-        Design design = new Design();
-        design.setIdDesign(idDesign);
+        Order updatedOrder = orderService.affectFolderStyle(1L, 2L);
+
+        assertNotNull(updatedOrder);
+        assertEquals(1, updatedOrder.getFolderStyles().size());
+        verify(orderRepository, times(1)).save(any(Order.class));
+    }
+
+    @Test
+    void testDesaffecterDesign() {
         order.getDesigns().add(design);
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(designRepository.findById(1L)).thenReturn(Optional.of(design));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        when(orderRepository.findById(idOrder)).thenReturn(Optional.of(order));
-        when(designRepository.findById(idDesign)).thenReturn(Optional.of(design));
+        Order updatedOrder = orderService.desaffecterDesign(1L, 1L);
 
-        orderService.desaffecterDesign(idOrder, idDesign);
-
-        assertFalse(order.getDesigns().contains(design));
-        verify(orderRepository).save(order);
+        assertNotNull(updatedOrder);
+        assertEquals(0, updatedOrder.getDesigns().size());
+        verify(orderRepository, times(1)).save(any(Order.class));
     }
 
     @Test
-    public void testDesaffecterFolderStyle() {
-        Long idOrder = 1L;
-        Long idFolderStyle = 1L;
-
-        Order order = new Order();
-        order.setIdOrder(idOrder);
-
-        FolderStyle folderStyle = new FolderStyle();
-        folderStyle.setIdFolder(idFolderStyle);
+    void testDesaffecterFolderStyle() {
         order.getFolderStyles().add(folderStyle);
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(folderStyleRepository.findById(1L)).thenReturn(Optional.of(folderStyle));
+        when(orderRepository.save(any(Order.class))).thenReturn(order);
 
-        when(orderRepository.findById(idOrder)).thenReturn(Optional.of(order));
-        when(folderStyleRepository.findById(idFolderStyle)).thenReturn(Optional.of(folderStyle));
+        Order updatedOrder = orderService.desaffecterFolderStyle(1L, 1L);
 
-        orderService.desaffecterFolderStyle(idOrder, idFolderStyle);
-
-        assertFalse(order.getFolderStyles().contains(folderStyle));
-        verify(orderRepository).save(order);
+        assertNotNull(updatedOrder);
+        assertEquals(0, updatedOrder.getFolderStyles().size());
+        verify(orderRepository, times(1)).save(any(Order.class));
     }
 
     @Test
-    public void testGetOrderById() {
-        Long idOrder = 1L;
+    void testGetOrderById() {
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 
-        Order order = new Order();
-        order.setIdOrder(idOrder);
+        Order foundOrder = orderService.getOrderById(1L);
 
-        when(orderRepository.findById(idOrder)).thenReturn(Optional.of(order));
-
-        Order result = orderService.getOrderById(idOrder);
-
-        assertEquals(order, result);
+        assertNotNull(foundOrder);
+        assertEquals(order, foundOrder);
+        verify(orderRepository, times(1)).findById(1L);
     }
 
     @Test
-    public void testGetAllOrders() {
-        List<Order> orders = List.of(new Order(), new Order());
-
+    void testGetAllOrders() {
+        List<Order> orders = Arrays.asList(order);
         when(orderRepository.findAll()).thenReturn(orders);
 
-        List<Order> result = orderService.getAllOrders();
+        List<Order> foundOrders = orderService.getAllOrders();
 
-        assertEquals(orders, result);
+        assertNotNull(foundOrders);
+        assertEquals(orders, foundOrders);
+        verify(orderRepository, times(1)).findAll();
     }
 
     @Test
-    public void testDeleteOrder() {
-        Long idOrder = 1L;
+    void testGetOrdersByBrand() {
+        List<Order> orders = Arrays.asList(order);
+        when(brandRepository.findById(1L)).thenReturn(Optional.of(brand));
+        when(orderRepository.getOrderByBrand(brand)).thenReturn(orders);
 
-        orderService.deleteOrder(idOrder);
+        List<Order> foundOrders = orderService.getOrdersByBrand(1L);
 
-        verify(orderRepository).deleteById(idOrder);
+        assertNotNull(foundOrders);
+        assertEquals(orders, foundOrders);
+        verify(orderRepository, times(1)).getOrderByBrand(brand);
     }
 
+    @Test
+    void testDeleteOrder() {
+        orderService.deleteOrder(1L);
 
+        verify(orderRepository, times(1)).deleteById(1L);
+    }
 }

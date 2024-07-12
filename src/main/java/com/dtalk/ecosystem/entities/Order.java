@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -32,17 +33,17 @@ public class Order {
     private int quantity = 0;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<FolderStyle> folderStyles;
+    private Set<FolderStyle> folderStyles = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<Design> designs;
+    private Set<Design> designs = new HashSet<>();
 
 
     @ManyToOne
     private Brand brand;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="order")
-    private Set<Prototype> prototypes ;
+    private Set<Prototype> prototypes = new HashSet<>() ;
 
 
 

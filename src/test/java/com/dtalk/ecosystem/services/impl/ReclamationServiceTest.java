@@ -61,7 +61,7 @@ public class ReclamationServiceTest {
 
         when(reclamationRepository.save(any(Reclamation.class))).thenReturn(reclamation);
 
-        Reclamation result = reclamationService.addReclamation(request, idUser, idDesign);
+        Reclamation result = reclamationService.addReclamationDesign(request, idUser, idDesign);
 
         assertNotNull(result);
         assertEquals(request.getDescription(), result.getDescription());

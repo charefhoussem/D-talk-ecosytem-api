@@ -45,4 +45,8 @@ public class Reclamation {
     @ManyToOne
     @JoinColumn(name = "folderStyle_id", nullable = false)
     private FolderStyle folderStyle;
+
+    @ManyToOne
+    @JoinColumn(name = "prototype_id", nullable = false)
+    private Prototype prototype;
 }
