@@ -95,7 +95,7 @@ public class ReclamationServiceImpl implements ReclamationService {
 
     @Override
     public void deleteReclamation(Long idReclamation) {
-        Reclamation rec = reclamationRepository.findById(idReclamation).orElseThrow(()->new ResourceNotFoundException("reclamation not found " + idReclamation) );
+        reclamationRepository.findById(idReclamation).orElseThrow(()->new ResourceNotFoundException("reclamation not found " + idReclamation) );
 
         reclamationRepository.deleteById(idReclamation);
 

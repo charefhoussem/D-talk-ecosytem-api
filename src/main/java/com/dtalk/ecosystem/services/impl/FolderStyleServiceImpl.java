@@ -141,7 +141,7 @@ public class FolderStyleServiceImpl implements FolderStyleService {
 
     @Override
     public void deleteFolderStyle(Long idFolderStyle) {
-        FolderStyle folder = folderStyleRepository.findById(idFolderStyle).orElseThrow(()->new ResourceNotFoundException("Folder not found with id: " + idFolderStyle));
+        folderStyleRepository.findById(idFolderStyle).orElseThrow(()->new ResourceNotFoundException("Folder not found with id: " + idFolderStyle));
         folderStyleRepository.deleteById(idFolderStyle);
     }
 
