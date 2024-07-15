@@ -54,6 +54,16 @@ public class ReclamationController {
         return reclamationService.getAllReclamationByDesign(id);
     }
 
+    @GetMapping("/folder-style/{idFolder}")
+    public List<Reclamation> getALLreclamationByFolder(@PathVariable("idFolder") Long id){
+        return reclamationService.getAllReclamationByFolderStyle(id);
+    }
+
+    @GetMapping("/prototype/{idPrototype}")
+    public List<Reclamation> getALLreclamationByPrototype(@PathVariable("idPrototype") Long id){
+        return reclamationService.getAllReclamationByPrototype(id);
+    }
+
     @DeleteMapping("/delete/{idRec}")
     public ResponseEntity<Object> deleteReclamation(@PathVariable("idRec") Long id){
        reclamationService.deleteReclamation(id);

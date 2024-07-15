@@ -22,7 +22,7 @@ public class LivraisonController {
      return ResponseEntity.ok(livraisonService.createLivraison(idOrder,request));
     }
 
-    @PostMapping("/update/{idOrder}")
+    @PutMapping("/update/{idOrder}")
     public ResponseEntity<LivraisonProduction> updateLivraison(@PathVariable("idOrder") Long idOrder, @RequestBody LivraisonRequest request) {
         return ResponseEntity.ok(livraisonService.updateLivraison(idOrder, request));
     }

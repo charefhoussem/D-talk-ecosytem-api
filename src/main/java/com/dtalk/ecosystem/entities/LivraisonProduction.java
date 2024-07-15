@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -19,7 +20,7 @@ public class LivraisonProduction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idLivraison;
 
-    private LocalDateTime date;
+    private LocalDate date;
 
     private int quantity;
 
