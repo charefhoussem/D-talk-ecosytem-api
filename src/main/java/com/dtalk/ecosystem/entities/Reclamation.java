@@ -22,12 +22,10 @@ public class Reclamation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idReclamation;
 
-
-
-   // @NotBlank(message = "Description is mandatory")
+    @NotBlank(message = "Description is mandatory")
     private String description;
 
-    //@NotNull(message = "Date is mandatory")
+    @NotNull(message = "Date is mandatory")
     private LocalDateTime date = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
