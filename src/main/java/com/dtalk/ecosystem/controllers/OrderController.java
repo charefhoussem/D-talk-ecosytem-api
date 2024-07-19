@@ -1,8 +1,10 @@
 package com.dtalk.ecosystem.controllers;
 
+import com.dtalk.ecosystem.DTOs.request.order.UpdateOrderRequest;
 import com.dtalk.ecosystem.entities.Order;
 import com.dtalk.ecosystem.services.OrderService;
 import lombok.AllArgsConstructor;
+import org.hibernate.sql.Update;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -72,6 +74,10 @@ public class OrderController {
         orderService.deleteOrder(idOrder);
         return ResponseEntity.ok("order deleted successfuly");
 
+    }
+    @PutMapping("/update/{idOrder}")
+    public ResponseEntity<Order> updateOrder(@PathVariable("idOrder") Long idOrder , @RequestBody UpdateOrderRequest request){
+        return ResponseEntity.ok(orderService.updateQuantityAndAmount(idOrder,request));
     }
 
 

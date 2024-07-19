@@ -16,7 +16,6 @@ public interface OrderService {
     public Order getOrderById(long idOrder);
     public List<Order> getAllOrders();
     public List<Order> getOrdersByBrand(Long idBrand);
-    public  Order updateOrder(Order order);
     public void deleteOrder(long idOrder);
 
     public Order updateQuantityAndAmount(Long idOrder, UpdateOrderRequest request);

@@ -123,10 +123,7 @@ public class OrderServiceImpl implements OrderService {
        return orderRepository.getOrderByBrand(brand);
     }
 
-    @Override
-    public Order updateOrder(Order order) {
-        return null;
-    }
+
 
     @Override
     public void deleteOrder(long idOrder) {
