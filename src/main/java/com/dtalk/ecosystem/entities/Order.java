@@ -1,6 +1,7 @@
 package com.dtalk.ecosystem.entities;
 
 import com.dtalk.ecosystem.entities.enumiration.EtatOrder;
+import com.dtalk.ecosystem.entities.enumiration.ModePaiement;
 import com.dtalk.ecosystem.entities.users.Brand;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,6 +47,9 @@ public class Order {
     private Set<Prototype> prototypes = new HashSet<>() ;
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "order")
     private Set<LivraisonProduction> livraisonProductions = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
+    private Set<ModePaiement> modePaiements;
 
 
 

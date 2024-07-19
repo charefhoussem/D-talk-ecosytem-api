@@ -26,5 +26,7 @@ public class Paiement {
     @Enumerated(EnumType.STRING)
     private ModePaiement modePaiement = ModePaiement.KONNECT;
 
+    @ManyToOne
+    private Order order;
 
 }
