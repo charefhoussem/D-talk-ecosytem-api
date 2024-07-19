@@ -9,5 +9,6 @@ public interface PaiementService {
     public List<Paiement> getPaiementByOrder(Long idOrder);
     public List<Paiement> getAllPaiement();
 
+    public Paiement updatePaiement();
 
 }
