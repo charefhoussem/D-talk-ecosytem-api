@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.entities;
 
+import com.dtalk.ecosystem.entities.enumiration.ModePaiement;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,8 @@ public class Paiement {
     private Boolean isCompleted = false;
 
     private Double amount = 0.0;
+    @Enumerated(EnumType.STRING)
+    private ModePaiement modePaiement = ModePaiement.KONNECT;
 
 
 }
