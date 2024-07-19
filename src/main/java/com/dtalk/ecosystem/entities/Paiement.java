@@ -22,4 +22,6 @@ public class Paiement {
     private Boolean isCompleted = false;
 
     private Double amount = 0.0;
+
+
 }
