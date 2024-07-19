@@ -35,21 +35,28 @@ public class PaiementServiceImpl implements PaiementService {
 
     @Override
     public List<Paiement> getPaiementByOrder(Long idOrder) {
-        return null;
+        Order order = orderRepository.findById(idOrder).orElseThrow(()-> new ResourceNotFoundException("order not found " + idOrder));
+        return paiementRepository.findPaiementsByOrderEquals(order);
     }
 
     @Override
     public List<Paiement> getAllPaiement() {
-        return null;
+        return paiementRepository.findAll();
     }
 
     @Override
     public Paiement updatePaiement(String RefPaiement, UpdatePaiementRequest request) {
-        return null;
+        Paiement paiement = paiementRepository.findById(RefPaiement).orElseThrow(()-> new ResourceNotFoundException("paiement not found"));
+        paiement.setModePaiement(request.getModePaiement());
+        paiement.setDate(request.getDate());
+        paiement.setAmount(request.getAmount());
+        return paiementRepository.save(paiement);
     }
 
     @Override
     public void deletePaiement(String RefPaiement) {
+        Paiement paiement = paiementRepository.findById(RefPaiement).orElseThrow(()-> new ResourceNotFoundException("paiement not found"));
+        paiementRepository.delete(paiement);
 
     }
 }
