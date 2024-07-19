@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class UpdatePaiement {
+public class UpdatePaiementRequest {
 
     private Double amount;
     private LocalDateTime date;
