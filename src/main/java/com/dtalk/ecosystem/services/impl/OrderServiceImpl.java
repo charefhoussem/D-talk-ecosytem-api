@@ -1,8 +1,11 @@
 package com.dtalk.ecosystem.services.impl;
 
+import com.dtalk.ecosystem.DTOs.request.order.UpdateOrderRequest;
 import com.dtalk.ecosystem.entities.*;
+import com.dtalk.ecosystem.entities.enumiration.EtatOrder;
 import com.dtalk.ecosystem.entities.users.Brand;
 import com.dtalk.ecosystem.exceptions.IllegalStateExceptionHandler;
+import com.dtalk.ecosystem.exceptions.ResourceInvalidException;
 import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 import com.dtalk.ecosystem.repositories.*;
 import com.dtalk.ecosystem.services.OrderService;
@@ -129,5 +132,18 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrder(long idOrder) {
         orderRepository.deleteById(idOrder);
 
+    }
+
+    @Override
+    public Order updateQuantityAndAmount(Long idOrder, UpdateOrderRequest request) {
+        Order order = orderRepository.findById(idOrder).orElseThrow(()-> new ResourceNotFoundException("order not found : "+ idOrder));
+         if(order.getEtat() != EtatOrder.PRODUCTION && !order.getIsValid()){
+              throw new ResourceInvalidException("The order must be validated and its state must be 'production'.");
+         }
+
+         order.setQuantity(request.getQuantity());
+         order.setAmount(request.getAmount());
+
+        return orderRepository.save(order);
     }
 }
