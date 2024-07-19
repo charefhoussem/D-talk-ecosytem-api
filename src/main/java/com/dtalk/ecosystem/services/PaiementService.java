@@ -13,4 +13,6 @@ public interface PaiementService {
 
     public Paiement updatePaiement(String RefPaiement , UpdatePaiementRequest request);
 
+    public void deletePaiement(String RefPaiement);
+
 }
