@@ -15,13 +15,14 @@ import java.time.LocalDateTime;
 @Table(name = "paiement")
 public class Paiement {
     @Id
-    private String RefPaiement;
+    private String refPaiement;
 
     private LocalDateTime date;
 
     private Boolean isCompleted = false;
 
     private Double amount = 0.0;
+
     @Enumerated(EnumType.STRING)
     private ModePaiement modePaiement = ModePaiement.KONNECT;
 

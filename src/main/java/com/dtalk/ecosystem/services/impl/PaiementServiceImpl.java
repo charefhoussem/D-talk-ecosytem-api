@@ -27,8 +27,11 @@ public class PaiementServiceImpl implements PaiementService {
         if( paiementRepository.findById(request.getRefPaiement()).isPresent()){
             throw new ResourceNotFoundException("ref paiement already exist");
         }
-
-        Paiement paiement = Paiement.builder().RefPaiement(request.getRefPaiement()).amount(request.getAmount()).date(request.getDate()).order(order).build();
+        var isCompleted = false;
+        if(order.getPaiements().stream().mapToDouble(Paiement::getAmount).sum() + request.getAmount() == order.getAmount() ) {
+          isCompleted = true;
+        }
+        Paiement paiement = Paiement.builder().refPaiement(request.getRefPaiement()).amount(request.getAmount()).date(request.getDate()).isCompleted(isCompleted).order(order).build();
 
         return paiementRepository.save(paiement);
     }
@@ -45,8 +48,8 @@ public class PaiementServiceImpl implements PaiementService {
     }
 
     @Override
-    public Paiement updatePaiement(String RefPaiement, UpdatePaiementRequest request) {
-        Paiement paiement = paiementRepository.findById(RefPaiement).orElseThrow(()-> new ResourceNotFoundException("paiement not found"));
+    public Paiement updatePaiement(String refPaiement, UpdatePaiementRequest request) {
+        Paiement paiement = paiementRepository.findById(refPaiement).orElseThrow(()-> new ResourceNotFoundException("paiement not found"));
         paiement.setModePaiement(request.getModePaiement());
         paiement.setDate(request.getDate());
         paiement.setAmount(request.getAmount());
@@ -54,8 +57,8 @@ public class PaiementServiceImpl implements PaiementService {
     }
 
     @Override
-    public void deletePaiement(String RefPaiement) {
-        Paiement paiement = paiementRepository.findById(RefPaiement).orElseThrow(()-> new ResourceNotFoundException("paiement not found"));
+    public void deletePaiement(String refPaiement) {
+        Paiement paiement = paiementRepository.findById(refPaiement).orElseThrow(()-> new ResourceNotFoundException("paiement not found"));
         paiementRepository.delete(paiement);
 
     }

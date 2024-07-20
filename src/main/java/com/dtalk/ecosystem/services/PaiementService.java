@@ -11,8 +11,8 @@ public interface PaiementService {
     public List<Paiement> getPaiementByOrder(Long idOrder);
     public List<Paiement> getAllPaiement();
 
-    public Paiement updatePaiement(String RefPaiement , UpdatePaiementRequest request);
+    public Paiement updatePaiement(String refPaiement , UpdatePaiementRequest request);
 
-    public void deletePaiement(String RefPaiement);
+    public void deletePaiement(String refPaiement);
 
 }

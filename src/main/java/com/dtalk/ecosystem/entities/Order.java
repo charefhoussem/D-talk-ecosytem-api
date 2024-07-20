@@ -49,7 +49,7 @@ public class Order {
     private Set<LivraisonProduction> livraisonProductions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
-    private Set<ModePaiement> modePaiements;
+    private Set<Paiement> paiements;
 
 
 

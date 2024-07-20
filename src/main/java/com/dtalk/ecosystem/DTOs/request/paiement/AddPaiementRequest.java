@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 @Data
 public class AddPaiementRequest {
-    private String RefPaiement;
+    private String refPaiement;
     private Long idOrder;
     private Double amount;
     private LocalDateTime date;
