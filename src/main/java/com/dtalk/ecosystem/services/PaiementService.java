@@ -7,7 +7,7 @@ import com.dtalk.ecosystem.entities.Paiement;
 import java.util.List;
 
 public interface PaiementService {
-    public Paiement createPaiement(AddPaiementRequest request);
+    public Paiement createPaiement(String paiement_ref, Long orderId);
     public List<Paiement> getPaiementByOrder(Long idOrder);
     public List<Paiement> getAllPaiement();
 

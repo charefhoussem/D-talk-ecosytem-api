@@ -22,9 +22,9 @@ public class PaiementServiceImpl implements PaiementService {
 
 
     @Override
-    public Paiement createPaiement(AddPaiementRequest request) {
-        Order order = orderRepository.findById(request.getIdOrder()).orElseThrow(()-> new ResourceNotFoundException("order not found " + request.getIdOrder()));
-        if( paiementRepository.findById(request.getRefPaiement()).isPresent()){
+    public Paiement createPaiement(String paiement_ref, Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("order not found " + request.getIdOrder()));
+        if( paiementRepository.findById(paiement_ref).isPresent()){
             throw new ResourceNotFoundException("ref paiement already exist");
         }
         var isCompleted = false;

@@ -1,6 +1,5 @@
 package com.dtalk.ecosystem.controllers;
 
-import com.dtalk.ecosystem.DTOs.request.paiement.AddPaiementRequest;
 import com.dtalk.ecosystem.DTOs.request.paiement.UpdatePaiementRequest;
 import com.dtalk.ecosystem.entities.Paiement;
 import com.dtalk.ecosystem.services.PaiementService;
@@ -17,8 +16,8 @@ public class PaiementController {
 
     private final PaiementService paiementService;
     @PostMapping("/add")
-    public ResponseEntity<Paiement> savePaiement(@RequestBody AddPaiementRequest request){
-        return ResponseEntity.ok(paiementService.createPaiement(request));
+    public ResponseEntity<Paiement> savePaiement(@RequestParam String paiement_ref, @RequestParam Long orderId){
+        return ResponseEntity.ok(paiementService.createPaiement(paiement_ref,orderId));
     }
     @GetMapping("/")
     public List<Paiement> getAllPaiement(){
