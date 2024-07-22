@@ -3,13 +3,13 @@ package com.dtalk.ecosystem.DTOs.request.paiement;
 import com.dtalk.ecosystem.entities.enumiration.ModePaiement;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class UpdatePaiementRequest {
 
     private Double amount;
-    private LocalDateTime date;
+    private LocalDate date;
     private ModePaiement modePaiement;
 
 }

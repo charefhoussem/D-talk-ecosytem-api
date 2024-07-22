@@ -4,7 +4,7 @@ import com.dtalk.ecosystem.entities.enumiration.ModePaiement;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "paiement")
-public class Paiement {
+public class payment {
     @Id
     private String refPaiement;
 
-    private LocalDateTime date;
+    private LocalDate date;
 
     private Boolean isCompleted = false;
 
