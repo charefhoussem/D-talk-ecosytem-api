@@ -11,6 +11,7 @@ import com.dtalk.ecosystem.repositories.PaymentRepository;
 import com.dtalk.ecosystem.services.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +21,8 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-
+    @Value("${payment.api.url}")
+    private  String paymentApiUrl;
     private final PaymentRepository paiementRepository;
     private final OrderRepository orderRepository;
     @Autowired
@@ -28,10 +30,8 @@ public class PaymentServiceImpl implements PaymentService {
 
 
 
-    public PaymentResponse getPaymentFromApi(String paymentId) {
-        String url = "https://api.preprod.konnect.network/api/v2/payments/" + paymentId;
-        return restTemplate.getForObject(url, PaymentResponse.class);
-    }
+
+
     @Override
     public payment createPaiement(String paiement_ref, Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("order not found " + orderId));
@@ -39,7 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new ResourceNotFoundException("ref payment already exist");
         }
 
-        String url = "https://api.preprod.konnect.network/api/v2/payments/" + paiement_ref;
+        String url = paymentApiUrl + paiement_ref;
         PaymentResponse response = restTemplate.getForObject(url, PaymentResponse.class);
 
         if(Objects.equals(response.getStatus(), "pending")){

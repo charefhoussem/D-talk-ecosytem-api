@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/paiement")
+@RequestMapping("/payment")
 @AllArgsConstructor
 public class PaiementController {
 
     private final PaymentService paiementService;
-    @PostMapping("/add")
+    @PostMapping("/notification")
     public ResponseEntity<payment> savePaiement(@RequestParam String paiement_ref, @RequestParam Long orderId){
         return ResponseEntity.ok(paiementService.createPaiement(paiement_ref,orderId));
     }
