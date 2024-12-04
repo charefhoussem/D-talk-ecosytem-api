@@ -12,7 +12,7 @@ public interface DesignService {
     public List<Design> retrieveAllDesgins();
     public List<Design> retrieveAllDesginsAcceptedAndPublished();
 
-    public List<Design> retrieveAllDesginByUser(Long idUser);
+    public Page<Design> retrieveAllDesginByUser(Long idUser , int page);
 
     public Page<Design> retrieveDesignsAcceptedByDesigner(Long idDesigner , int page);
 

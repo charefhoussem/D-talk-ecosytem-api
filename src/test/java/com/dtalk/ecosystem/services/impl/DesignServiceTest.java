@@ -11,6 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -225,44 +229,142 @@ public void testGetAllDesignsIsacceptedIsTrueAndIsPublishedIsTrue(){
     assertEquals("Published and Accepted Design", designs.get(0).getName());
 
 }
+    @Test
+    public void testRetrieveAllDesignsByUser() {
+        Long designerId = 1L;
+        Designer designer = new Designer();
+        designer.setIdUser(designerId);
+
+        Design design1 = new Design();
+        design1.setIdDesign(1L);
+        design1.setName("Design 1");
+        design1.setDesigner(designer);
+
+        Design design2 = new Design();
+        design2.setIdDesign(2L);
+        design2.setName("Design 2");
+        design2.setDesigner(designer);
+
+        List<Design> designList = Arrays.asList(design1, design2);
+
+        Pageable pageable = PageRequest.of(0, 12);
+        Page<Design> page = new PageImpl<>(designList, pageable, designList.size());
+
+        when(designerRepository.findById(designerId)).thenReturn(Optional.of(designer));
+        when(designRepository.findDesignsByDesignerEquals(designer, pageable)).thenReturn(page);
+
+        Page<Design> result = designService.retrieveAllDesginByUser(designerId, 0);
+
+        assertNotNull(result);
+        assertEquals(2, result.getContent().size());
+        assertEquals("Design 1", result.getContent().get(0).getName());
+    }
 
     @Test
-    public void testFindDesignsByDesignerEquals() {
+    public void testRetrieveDesignsAcceptedByDesigner() {
+        Long designerId = 1L;
+        Designer designer = new Designer();
+        designer.setIdUser(designerId);
 
+        Design design1 = new Design();
+        design1.setIdDesign(1L);
+        design1.setName("Accepted Design 1");
+        design1.setDesigner(designer);
+        design1.setIsAccepted(true);
 
-        // Initialize test data
-        Designer testUser = new Designer();
-        testUser.setIdUser(1L);
-        when(designerRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        List<Design> designList = Arrays.asList(design1);
 
-        Design publishedAcceptedDesign = new Design();
-        publishedAcceptedDesign.setIdDesign(1L);
-        publishedAcceptedDesign.setName("Published and Accepted Design");
-        publishedAcceptedDesign.setDesigner(testUser);
+        Pageable pageable = PageRequest.of(0, 12);
+        Page<Design> page = new PageImpl<>(designList, pageable, designList.size());
 
-        Design unpublishedDesign = new Design();
-        unpublishedDesign.setIdDesign(2L);
-        unpublishedDesign.setName("Unpublished Design");
-        unpublishedDesign.setDesigner(testUser);
+        when(designerRepository.findById(designerId)).thenReturn(Optional.of(designer));
+        when(designRepository.findDesignsByDesignerAndIsAcceptedTrue(designer, pageable)).thenReturn(page);
 
-        Design rejectedDesign = new Design();
-        rejectedDesign.setIdDesign(3L);
-        rejectedDesign.setName("Rejected Design");
-        rejectedDesign.setDesigner(testUser);
+        Page<Design> result = designService.retrieveDesignsAcceptedByDesigner(designerId, 0);
 
-        // Mock the method findDesignsByUserEquals
-        List<Design> expectedDesigns = Arrays.asList(publishedAcceptedDesign, unpublishedDesign, rejectedDesign);
-        when(designRepository.findDesignsByDesignerEquals(testUser)).thenReturn(expectedDesigns);
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertTrue(result.getContent().get(0).getIsAccepted());
+    }
+    @Test
+    public void testRetrieveDesignsNotAcceptedByDesigner() {
+        Long designerId = 1L;
+        Designer designer = new Designer();
+        designer.setIdUser(designerId);
 
-        // Call the method under test
-        List<Design> designs = designService.retrieveAllDesginByUser(testUser.getIdUser());
+        Design design1 = new Design();
+        design1.setIdDesign(1L);
+        design1.setName("Not Accepted Design 1");
+        design1.setDesigner(designer);
+        design1.setIsAccepted(false);
 
-        // Assertions
-        assertNotNull(designs);  // Ensure the returned list is not null
-        assertEquals(3, designs.size());
-        assertEquals("Published and Accepted Design", designs.get(0).getName());
-        assertEquals("Unpublished Design", designs.get(1).getName());
-        assertEquals("Rejected Design", designs.get(2).getName());
+        List<Design> designList = Arrays.asList(design1);
+
+        Pageable pageable = PageRequest.of(0, 12);
+        Page<Design> page = new PageImpl<>(designList, pageable, designList.size());
+
+        when(designerRepository.findById(designerId)).thenReturn(Optional.of(designer));
+        when(designRepository.findDesignsByDesignerAndIsAcceptedFalse(designer, pageable)).thenReturn(page);
+
+        Page<Design> result = designService.retrieveDesignsNotAcceptedByDesigner(designerId, 0);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertFalse(result.getContent().get(0).getIsAccepted());
+    }
+    @Test
+    public void testRetrieveDesignsEnAttenteByDesigner() {
+        Long designerId = 1L;
+        Designer designer = new Designer();
+        designer.setIdUser(designerId);
+
+        Design design1 = new Design();
+        design1.setIdDesign(1L);
+        design1.setName("Design en Attente 1");
+        design1.setDesigner(designer);
+        design1.setIsAccepted(false);
+        design1.setIsPublished(false);
+
+        List<Design> designList = Arrays.asList(design1);
+
+        Pageable pageable = PageRequest.of(0, 12);
+        Page<Design> page = new PageImpl<>(designList, pageable, designList.size());
+
+        when(designerRepository.findById(designerId)).thenReturn(Optional.of(designer));
+        when(designRepository.findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(designer, pageable)).thenReturn(page);
+
+        Page<Design> result = designService.retrieveDesignsEnAttenteByDesigner(designerId, 0);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertFalse(result.getContent().get(0).getIsAccepted());
+        assertFalse(result.getContent().get(0).getIsPublished());
+    }
+    @Test
+    public void testRetrieveDesignsNotPublicByDesigner() {
+        Long designerId = 1L;
+        Designer designer = new Designer();
+        designer.setIdUser(designerId);
+
+        Design design1 = new Design();
+        design1.setIdDesign(1L);
+        design1.setName("Non Public Design 1");
+        design1.setDesigner(designer);
+        design1.setIsPublished(false);
+
+        List<Design> designList = Arrays.asList(design1);
+
+        Pageable pageable = PageRequest.of(0, 12);
+        Page<Design> page = new PageImpl<>(designList, pageable, designList.size());
+
+        when(designerRepository.findById(designerId)).thenReturn(Optional.of(designer));
+        when(designRepository.findDesignsByDesignerAndIsPublishedFalse(designer, pageable)).thenReturn(page);
+
+        Page<Design> result = designService.retrieveDesignsNotPublicByDesigner(designerId, 0);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertFalse(result.getContent().get(0).getIsPublished());
     }
 
 

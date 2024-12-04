@@ -13,7 +13,7 @@ import java.util.List;
 public interface DesignRepository extends JpaRepository<Design,Long> {
 
     List<Design> findDesignsByIsPublishedIsTrueAndIsAcceptedIsTrue();
-    List<Design> findDesignsByDesignerEquals(Designer designer);
+    Page<Design> findDesignsByDesignerEquals(Designer designer, Pageable pageable);
 
     Page<Design> findDesignsByDesignerAndIsPublishedFalse(Designer designer, Pageable pageable);
 

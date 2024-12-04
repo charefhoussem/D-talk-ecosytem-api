@@ -4,6 +4,7 @@ import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.response.ResponseHandler;
 import com.dtalk.ecosystem.services.DesignService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,27 +30,70 @@ public class DesignController {
 
     @GetMapping("/{id}")
     public Design getDesignById(@PathVariable Long id) {
-        Design design = designService.getDesignById(id);
-        return design;
+        return designService.getDesignById(id);
 
     }
 
     @GetMapping("/accepted-published")
     public List<Design> aaceptedAndPublishedDesign(){
-        List<Design> designs = designService.retrieveAllDesginsAcceptedAndPublished();
+        return designService.retrieveAllDesginsAcceptedAndPublished();
 
-        return designs;
 
     }
     @PreAuthorize("hasRole('DESIGNER')")
-
     @GetMapping("/designer/{idDesigner}")
 
-    public List<Design> getAllDesignByUser(@PathVariable("idDesigner") Long id){
-        List<Design> designs = designService.retrieveAllDesginByUser(id);
-        return designs;
+    public Page<Design> getAllDesignByUser(@PathVariable("idDesigner") Long id,
+                                           @RequestParam(value = "page", defaultValue = "0") int page){
+        return designService.retrieveAllDesginByUser(id,page);
 
     }
+
+
+    @PreAuthorize("hasRole('DESIGNER')")
+    @GetMapping("/designs-approved-byDesigner/{idDesigner}")
+    public Page<Design> getAllDesignsAcceptedByDesigner(
+            @PathVariable("idDesigner") Long id,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ){
+        return designService.retrieveDesignsAcceptedByDesigner(id,page);
+
+    }
+
+    @PreAuthorize("hasRole('DESIGNER')")
+    @GetMapping("/designs-rejected-byDesigner/{idDesigner}")
+    public Page<Design> getAllDesignsNotAcceptedByDesigner(
+            @PathVariable("idDesigner") Long id,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ){
+        return designService.retrieveDesignsNotAcceptedByDesigner(id,page);
+
+    }
+
+    @PreAuthorize("hasRole('DESIGNER')")
+    @GetMapping("/designs-en-attente-byDesigner/{idDesigner}")
+    public Page<Design> getAllDesignsEnAttenteByDesigner(
+            @PathVariable("idDesigner") Long id,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ){
+        return designService.retrieveDesignsEnAttenteByDesigner(id,page);
+
+    }
+
+
+    @PreAuthorize("hasRole('DESIGNER')")
+    @GetMapping("/designs-blocked-byDesigner/{idDesigner}")
+    public Page<Design> getAllDesignsBlockedDesigner(
+            @PathVariable("idDesigner") Long id,
+            @RequestParam(value = "page", defaultValue = "0") int page
+    ){
+        return designService.retrieveDesignsNotPublicByDesigner(id,page);
+
+    }
+
+
+
+
     @PreAuthorize("hasRole('DESIGNER')")
 
     @PostMapping("/add/{idDesigner}")

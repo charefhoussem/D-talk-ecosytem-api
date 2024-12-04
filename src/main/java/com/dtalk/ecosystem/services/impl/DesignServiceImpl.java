@@ -45,10 +45,11 @@ public class DesignServiceImpl implements DesignService {
      }
 
      @Override
-     public List<Design> retrieveAllDesginByUser(Long idDesigner) {
+     public Page<Design> retrieveAllDesginByUser(Long idDesigner ,int page) {
          Designer designer = designerRepository.findById(idDesigner)
                  .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
-         return designRepository.findDesignsByDesignerEquals(designer);
+         Pageable pageable = PageRequest.of(page,12);
+         return designRepository.findDesignsByDesignerEquals(designer, pageable);
     }
 
     @Override
