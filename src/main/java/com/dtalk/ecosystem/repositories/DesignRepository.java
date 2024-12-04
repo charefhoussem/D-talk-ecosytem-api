@@ -13,4 +13,12 @@ public interface DesignRepository extends JpaRepository<Design,Long> {
     List<Design> findDesignsByIsPublishedIsTrueAndIsAcceptedIsTrue();
     List<Design> findDesignsByDesignerEquals(Designer designer);
 
+    List<Design> findDesignsByDesignerAndIsPublishedFalse(Designer designer);
+
+    List<Design> findDesignsByDesignerAndIsAcceptedFalse(Designer designer);
+
+    List<Design> findDesignsByDesignerAndIsAcceptedTrue(Designer designer);
+
+    List<Design> findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(Designer designer);
+
 }

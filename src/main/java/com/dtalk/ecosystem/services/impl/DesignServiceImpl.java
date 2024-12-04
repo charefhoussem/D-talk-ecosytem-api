@@ -14,13 +14,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class DesignServiceImpl implements DesignService {
     private final DesignRepository designRepository;
-    private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final FieldRepository fieldRepository;
     private final EmailService emailService;
@@ -48,6 +48,35 @@ public class DesignServiceImpl implements DesignService {
          return designRepository.findDesignsByDesignerEquals(designer);
     }
 
+    @Override
+    public List<Design> retrieveDesignsAcceptedByDesigner(Long idDesigner) {
+        Designer designer = designerRepository.findById(idDesigner)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
+
+        return designRepository.findDesignsByDesignerAndIsAcceptedTrue(designer);
+    }
+
+    @Override
+    public List<Design> retrieveDesignsNotAcceptedByDesigner(Long idDesigner) {
+        Designer designer = designerRepository.findById(idDesigner)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
+        return designRepository.findDesignsByDesignerAndIsAcceptedFalse(designer);
+    }
+
+    @Override
+    public List<Design> retrieveDesignsEnAttenteByDesigner(Long idDesigner) {
+        Designer designer = designerRepository.findById(idDesigner)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
+        return designRepository.findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(designer);
+    }
+
+    @Override
+    public List<Design> retrieveDesignsNotPublicByDesigner(Long idDesigner) {
+        Designer designer = designerRepository.findById(idDesigner)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
+        return designRepository.findDesignsByDesignerAndIsPublishedFalse(designer);
+    }
+
 
     @Override
     public Design createDesign(String name, double price, String description, MultipartFile imageFile, MultipartFile originFile, Long idDesigner, List<String> tagNames,List<String> fieldTitles) throws IOException {
@@ -57,6 +86,8 @@ public class DesignServiceImpl implements DesignService {
         design.setPrice(price);
         design.setIsAccepted(false);
         design.setIsPublished(false);
+        LocalDate date = LocalDate.now();
+        design.setCreationDate(date);
         Designer designer = designerRepository.findById(idDesigner).get();
         design.setDesigner(designer);
         String imageFileName = fileStorageService.saveFile(imageFile);
@@ -78,6 +109,7 @@ public class DesignServiceImpl implements DesignService {
         Design design = designRepository.findById(idDesign)
             .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(true);
+        design.setIsPublished(true);
         designRepository.save(design);
         emailService.notification(design.getDesigner().getEmail(),true,"NotificationDesignMail","Notification Design");
 
@@ -89,6 +121,8 @@ public class DesignServiceImpl implements DesignService {
         Design design = designRepository.findById(idDesign)
                 .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(false);
+        design.setIsPublished(false);
+
         designRepository.save(design);
 
         emailService.notification(design.getDesigner().getEmail(),false,"NotificationDesignMail","Notification Design");

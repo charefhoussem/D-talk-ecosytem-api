@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +29,8 @@ public class Design {
 
     @Size(max = 255, message = "Description must be less than 255 characters")
     private String description;
+
+    private LocalDate creationDate;
 
     @NotBlank(message = "Image path is mandatory")
     private String imagePath;

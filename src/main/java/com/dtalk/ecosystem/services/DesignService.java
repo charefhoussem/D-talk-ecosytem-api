@@ -12,6 +12,20 @@ public interface DesignService {
     public List<Design> retrieveAllDesginsAcceptedAndPublished();
 
     public List<Design> retrieveAllDesginByUser(Long idUser);
+
+    public List<Design> retrieveDesignsAcceptedByDesigner(Long idDesigner);
+
+    public List<Design> retrieveDesignsNotAcceptedByDesigner(Long idDesigner);
+
+
+    public List<Design> retrieveDesignsEnAttenteByDesigner(Long idDesigner);
+
+
+    public List<Design> retrieveDesignsNotPublicByDesigner(Long idDesigner);
+
+
+
+
     public Design createDesign(String name, double price,String description, MultipartFile imageFile, MultipartFile originFile,Long idDesigner,List<String> tagNames,List<String> fieldTitles) throws IOException;
     public Boolean acceptDesign(Long idDesign);
     public Boolean disacceptDesign(Long idDesign);
