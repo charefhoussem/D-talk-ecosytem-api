@@ -9,6 +9,9 @@ import com.dtalk.ecosystem.repositories.*;
 import com.dtalk.ecosystem.services.DesignService;
 import com.dtalk.ecosystem.services.EmailService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,32 +52,38 @@ public class DesignServiceImpl implements DesignService {
     }
 
     @Override
-    public List<Design> retrieveDesignsAcceptedByDesigner(Long idDesigner) {
+    public Page<Design> retrieveDesignsAcceptedByDesigner(Long idDesigner,int page) {
         Designer designer = designerRepository.findById(idDesigner)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
-
-        return designRepository.findDesignsByDesignerAndIsAcceptedTrue(designer);
+        Pageable pageable = PageRequest.of(page,12);
+        return designRepository.findDesignsByDesignerAndIsAcceptedTrue(designer,pageable);
     }
 
     @Override
-    public List<Design> retrieveDesignsNotAcceptedByDesigner(Long idDesigner) {
+    public Page<Design> retrieveDesignsNotAcceptedByDesigner(Long idDesigner , int page) {
         Designer designer = designerRepository.findById(idDesigner)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
-        return designRepository.findDesignsByDesignerAndIsAcceptedFalse(designer);
+        Pageable pageable = PageRequest.of(page,12);
+
+        return designRepository.findDesignsByDesignerAndIsAcceptedFalse(designer,pageable);
     }
 
     @Override
-    public List<Design> retrieveDesignsEnAttenteByDesigner(Long idDesigner) {
+    public Page<Design> retrieveDesignsEnAttenteByDesigner(Long idDesigner,int page) {
         Designer designer = designerRepository.findById(idDesigner)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
-        return designRepository.findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(designer);
+        Pageable pageable = PageRequest.of(page,12);
+
+        return designRepository.findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(designer,pageable);
     }
 
     @Override
-    public List<Design> retrieveDesignsNotPublicByDesigner(Long idDesigner) {
+    public Page<Design> retrieveDesignsNotPublicByDesigner(Long idDesigner,int page) {
         Designer designer = designerRepository.findById(idDesigner)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
-        return designRepository.findDesignsByDesignerAndIsPublishedFalse(designer);
+        Pageable pageable = PageRequest.of(page,12);
+
+        return designRepository.findDesignsByDesignerAndIsPublishedFalse(designer,pageable);
     }
 
 

@@ -1,6 +1,7 @@
 package com.dtalk.ecosystem.services;
 
 import com.dtalk.ecosystem.entities.Design;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -13,15 +14,15 @@ public interface DesignService {
 
     public List<Design> retrieveAllDesginByUser(Long idUser);
 
-    public List<Design> retrieveDesignsAcceptedByDesigner(Long idDesigner);
+    public Page<Design> retrieveDesignsAcceptedByDesigner(Long idDesigner , int page);
 
-    public List<Design> retrieveDesignsNotAcceptedByDesigner(Long idDesigner);
-
-
-    public List<Design> retrieveDesignsEnAttenteByDesigner(Long idDesigner);
+    public Page<Design> retrieveDesignsNotAcceptedByDesigner(Long idDesigner , int page);
 
 
-    public List<Design> retrieveDesignsNotPublicByDesigner(Long idDesigner);
+    public Page<Design> retrieveDesignsEnAttenteByDesigner(Long idDesigner, int page);
+
+
+    public Page<Design> retrieveDesignsNotPublicByDesigner(Long idDesigner , int page);
 
 
 
