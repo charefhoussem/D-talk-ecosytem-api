@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.controllers;
 
+import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.response.ResponseHandler;
 import com.dtalk.ecosystem.services.DesignService;
@@ -89,6 +90,16 @@ public class DesignController {
     ){
         return designService.retrieveDesignsNotPublicByDesigner(id,page);
 
+    }
+
+    @PreAuthorize("hasRole('DESIGNER')")
+    @GetMapping("/overview/{designerId}")
+    public ResponseEntity<Page<OrderedDesignDTO>> getDesignsOverview(
+            @PathVariable Long designerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<OrderedDesignDTO> overview = designService.getOrderedDesignsByDesigner(designerId, page, size);
+        return ResponseEntity.ok(overview);
     }
 
 

@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services.impl;
 
+import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.FieldDesigner;
 import com.dtalk.ecosystem.entities.Tag;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -184,7 +186,21 @@ public class DesignServiceImpl implements DesignService {
 
     }
 
+    @Override
+    public Page<OrderedDesignDTO> getOrderedDesignsByDesigner(Long idDesigner, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("order.date").descending()); // Trier par date de commande (descendant)
+        Page<Design> designs = designRepository.findOrderedDesignsByDesigner(idDesigner, pageable);
+        return designs.map(design -> new OrderedDesignDTO(
+                design.getImagePath(),
+                design.getName(),
+                design.getPrice(),
+                design.getOrder().getQuantity(),
+                design.getPrice() * design.getOrder().getQuantity(),
+                design.getOrder().getDate(),
+                design.getCreationDate()
+        ));
 
+    }
 
 
     private Set<Tag> getOrCreateTags(List<String> tagNames) {
