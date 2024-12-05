@@ -33,7 +33,7 @@ public class BankTransaction {
     private LocalDate date = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
-    private ModePayment modePayment = ModePayment.WESTERN;
+    private ModePayment modePayment ;
 
     private String problem;
    @ManyToOne
