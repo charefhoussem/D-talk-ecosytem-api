@@ -1,14 +1,13 @@
 package com.dtalk.ecosystem.entities.users;
 
+import com.dtalk.ecosystem.entities.BankTransaction;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.validation.constraints.*;
 @Entity
@@ -30,4 +29,7 @@ public class Designer extends User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="designer")
     @JsonIgnore
     private Set<Design> designs;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="designer")
+    private Set<BankTransaction> bankTransactions = new HashSet<>() ;
 }
