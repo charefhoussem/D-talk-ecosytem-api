@@ -93,7 +93,9 @@ public class AuthenticationController {
             @RequestParam("country") String country,
             @RequestParam("countryCode") String countryCode,
             @RequestParam("phone") String phone,
+
             @RequestParam("imageFile") MultipartFile imageFile
+
 
 
     ) throws IOException {

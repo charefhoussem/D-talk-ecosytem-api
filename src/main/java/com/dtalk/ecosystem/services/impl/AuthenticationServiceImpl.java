@@ -13,6 +13,7 @@ import com.dtalk.ecosystem.services.AuthenticationService;
 import com.dtalk.ecosystem.services.EmailService;
 import com.dtalk.ecosystem.services.JwtService;
 import lombok.AllArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -43,7 +44,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
+
     private FileStorageService fileStorageService;
+
 
     @Autowired
     public void setFileStorageService(FileStorageService fileStorageService) {
@@ -57,6 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         String codeVerification = VerificationCodeGenerateService.generateCode();
+
 
         Designer d = new Designer();
         d.setName(request.getName());
@@ -77,9 +81,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             d.setImageUrl(imageUrl);
 
 
-        designerRepository.save(d);
+        Designer nd=designerRepository.save(d);
         emailService.confirmationSignup(d.getEmail(),"Code Verification",codeVerification);
-        return d;
+        return nd;
 
     }
 
@@ -111,9 +115,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         fd.setImageUrl(imageUrl);
 
 
-        fashionDesignerRepository.save(fd);
+        FashionDesigner nfd=fashionDesignerRepository.save(fd);
         emailService.confirmationSignup(fd.getEmail(),"Code Verification",codeVerification);
-        return fd;
+        return nfd;
     }
 
     @Override
@@ -143,9 +147,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Set<ProductionType> prodTypes = getOrCreateProductionType(request.getProductionTypes());
         b.setProductionTypes(prodTypes);
 
-        brandRepository.save(b);
+        Brand nb=brandRepository.save(b);
         emailService.confirmationSignup(b.getEmail(),"Code Verification",codeVerification);
-        return b;
+        return nb;
     }
 
     @Override
@@ -176,9 +180,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         ad.setImageUrl(imageUrl);
 
 
-        adminRepository.save(ad);
+        Admin nad = adminRepository.save(ad);
         emailService.confirmationSignup(ad.getEmail(),"Code Verification",codeVerification);
-        return ad;    }
+        return nad;    }
 
     @Override
     public JwtAuthenticationResponse signin(SigninRequest request) throws BadCredentialsException {

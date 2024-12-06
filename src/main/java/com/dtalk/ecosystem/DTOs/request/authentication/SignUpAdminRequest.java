@@ -20,4 +20,5 @@ public class SignUpAdminRequest {
     private String countryCode;
     private MultipartFile imageFile;
     private String phone;
+
 }
