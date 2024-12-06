@@ -21,8 +21,6 @@ public class Reclamation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idReclamation;
 
-
-
     @NotBlank(message = "Description is mandatory")
     private String description;
 

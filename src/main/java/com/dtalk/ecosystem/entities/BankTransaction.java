@@ -28,7 +28,7 @@ public class BankTransaction {
     private String rib;
 
     @Enumerated(EnumType.STRING)
-    private StatusPayment status = StatusPayment.ENATTENTE;
+    private StatusPayment status = StatusPayment.EN_ATTENTE;
 
     private LocalDate date = LocalDate.now();
 
