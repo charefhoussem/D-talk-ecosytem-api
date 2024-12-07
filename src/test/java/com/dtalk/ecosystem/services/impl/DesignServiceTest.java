@@ -1,6 +1,7 @@
 package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.entities.Design;
+import com.dtalk.ecosystem.entities.DesignStatus;
 import com.dtalk.ecosystem.entities.FieldDesigner;
 import com.dtalk.ecosystem.entities.Tag;
 import com.dtalk.ecosystem.entities.users.Designer;
@@ -158,10 +159,10 @@ public class DesignServiceTest {
         Design design = new Design();
         design.setIsAccepted(true);
         design.setDesigner(d);
-
+        String reason ="reason";
         when(designRepository.findById(designId)).thenReturn(Optional.of(design));
 
-        Boolean result = designService.disacceptDesign(designId);
+        Boolean result = designService.rejectedDesign(designId,reason);
 
         assertTrue(result);
         assertFalse(design.getIsAccepted());
@@ -278,7 +279,7 @@ public void testGetAllDesignsIsacceptedIsTrueAndIsPublishedIsTrue(){
         Page<Design> page = new PageImpl<>(designList, pageable, designList.size());
 
         when(designerRepository.findById(designerId)).thenReturn(Optional.of(designer));
-        when(designRepository.findDesignsByDesignerAndIsAcceptedTrue(designer, pageable)).thenReturn(page);
+        when(designRepository.findDesignsByDesignerAndStatus(designer, DesignStatus.ACCEPTED, pageable)).thenReturn(page);
 
         Page<Design> result = designService.retrieveDesignsAcceptedByDesigner(designerId, 0);
 
@@ -304,7 +305,7 @@ public void testGetAllDesignsIsacceptedIsTrueAndIsPublishedIsTrue(){
         Page<Design> page = new PageImpl<>(designList, pageable, designList.size());
 
         when(designerRepository.findById(designerId)).thenReturn(Optional.of(designer));
-        when(designRepository.findDesignsByDesignerAndIsAcceptedFalse(designer, pageable)).thenReturn(page);
+        when(designRepository.findDesignsByDesignerAndStatus(designer,DesignStatus.REJECTED, pageable)).thenReturn(page);
 
         Page<Design> result = designService.retrieveDesignsNotAcceptedByDesigner(designerId, 0);
 

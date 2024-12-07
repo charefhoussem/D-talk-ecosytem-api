@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services;
 
+import com.dtalk.ecosystem.DTOs.request.design.RejectionReasonRequest;
 import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,7 @@ public interface DesignService {
 
     public Design createDesign(String name, double price,String description, MultipartFile imageFile, MultipartFile originFile,Long idDesigner,List<String> tagNames,List<String> fieldTitles) throws IOException;
     public Boolean acceptDesign(Long idDesign);
-    public Boolean rejectedDesign(Long idDesign);
+    public Boolean rejectedDesign(Long idDesign,String reason);
 
     public Boolean publishDesign(Long idDesign);
     public Boolean unpublishDesign(Long idDesign);

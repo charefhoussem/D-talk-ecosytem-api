@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.controllers;
 
+import com.dtalk.ecosystem.DTOs.request.design.RejectionReasonRequest;
 import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.response.ResponseHandler;
@@ -160,8 +161,8 @@ public class DesignController {
     @PreAuthorize("hasRole('ADMIN')")
 
     @PutMapping("/disaccept/{id}")
-    public ResponseEntity<Object> disacceptDesign(@PathVariable("id") Long id){
-        Boolean disccept = designService.rejectedDesign(id);
+    public ResponseEntity<Object> disacceptDesign(@PathVariable("id") Long id, @RequestBody RejectionReasonRequest reasonRequest){
+        Boolean disccept = designService.rejectedDesign(id,reasonRequest.getReason());
         if (disccept){
             return    ResponseHandler.responseBuilder("design disccepted",HttpStatus.OK,null);
         }else{

@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services.impl;
 
+import com.dtalk.ecosystem.DTOs.request.design.RejectionReasonRequest;
 import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.DesignStatus;
@@ -131,11 +132,12 @@ public class DesignServiceImpl implements DesignService {
     }
 
     @Override
-    public Boolean rejectedDesign(Long idDesign) {
+    public Boolean rejectedDesign(Long idDesign, String reason) {
         Design design = designRepository.findById(idDesign)
                 .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(false);
         design.setIsPublished(false);
+        design.setRejection_reason(reason);
         design.setStatus(DesignStatus.REJECTED);
 
         designRepository.save(design);
