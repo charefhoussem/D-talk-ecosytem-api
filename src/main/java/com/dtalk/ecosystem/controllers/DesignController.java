@@ -161,7 +161,7 @@ public class DesignController {
 
     @PutMapping("/disaccept/{id}")
     public ResponseEntity<Object> disacceptDesign(@PathVariable("id") Long id){
-        Boolean disccept = designService.disacceptDesign(id);
+        Boolean disccept = designService.rejectedDesign(id);
         if (disccept){
             return    ResponseHandler.responseBuilder("design disccepted",HttpStatus.OK,null);
         }else{

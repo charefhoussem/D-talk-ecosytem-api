@@ -48,7 +48,7 @@ public class Design {
     @Digits(integer = 10, fraction = 2, message = "Price must be a valid amount")
     private double price;
 
-    private String rejection_reason="";
+    private String rejection_reason;
 
     @Enumerated(EnumType.STRING)
     private DesignStatus status = DesignStatus.ON_HOLD;

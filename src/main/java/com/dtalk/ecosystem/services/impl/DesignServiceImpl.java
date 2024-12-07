@@ -2,6 +2,7 @@ package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
+import com.dtalk.ecosystem.entities.DesignStatus;
 import com.dtalk.ecosystem.entities.FieldDesigner;
 import com.dtalk.ecosystem.entities.Tag;
 import com.dtalk.ecosystem.entities.users.Designer;
@@ -59,7 +60,7 @@ public class DesignServiceImpl implements DesignService {
         Designer designer = designerRepository.findById(idDesigner)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
         Pageable pageable = PageRequest.of(page,12);
-        return designRepository.findDesignsByDesignerAndIsAcceptedTrue(designer,pageable);
+        return designRepository.findDesignsByDesignerAndStatus(designer,DesignStatus.ACCEPTED,pageable);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class DesignServiceImpl implements DesignService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
         Pageable pageable = PageRequest.of(page,12);
 
-        return designRepository.findDesignsByDesignerAndIsAcceptedFalse(designer,pageable);
+        return designRepository.findDesignsByDesignerAndStatus(designer,DesignStatus.REJECTED,pageable);
     }
 
     @Override
@@ -77,7 +78,7 @@ public class DesignServiceImpl implements DesignService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + idDesigner));
         Pageable pageable = PageRequest.of(page,12);
 
-        return designRepository.findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(designer,pageable);
+        return designRepository.findDesignsByDesignerAndStatus(designer,DesignStatus.ON_HOLD,pageable);
     }
 
     @Override
@@ -122,6 +123,7 @@ public class DesignServiceImpl implements DesignService {
             .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(true);
         design.setIsPublished(true);
+        design.setStatus(DesignStatus.ACCEPTED);
         designRepository.save(design);
         emailService.notification(design.getDesigner().getEmail(),true,"NotificationDesignMail","Notification Design");
 
@@ -129,11 +131,12 @@ public class DesignServiceImpl implements DesignService {
     }
 
     @Override
-    public Boolean disacceptDesign(Long idDesign) {
+    public Boolean rejectedDesign(Long idDesign) {
         Design design = designRepository.findById(idDesign)
                 .orElseThrow(() -> new ResourceNotFoundException("Design not found with id: " + idDesign));
         design.setIsAccepted(false);
         design.setIsPublished(false);
+        design.setStatus(DesignStatus.REJECTED);
 
         designRepository.save(design);
 
@@ -194,9 +197,12 @@ public class DesignServiceImpl implements DesignService {
                 design.getImagePath(),
                 design.getName(),
                 design.getPrice(),
-                design.getOrder().getQuantity(),
-                design.getPrice() * design.getOrder().getQuantity(),
-                design.getOrder().getDate(),
+                design.getOrders().size(),
+                design.getPrice() * design.getOrders().size(),
+                // je veux recuperer la date de la derniere order
+                design.getOrders().getDate(),
+
+
                 design.getCreationDate()
         ));
 

@@ -1,6 +1,7 @@
 package com.dtalk.ecosystem.repositories;
 
 import com.dtalk.ecosystem.entities.Design;
+import com.dtalk.ecosystem.entities.DesignStatus;
 import com.dtalk.ecosystem.entities.users.Designer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,9 +20,7 @@ public interface DesignRepository extends JpaRepository<Design,Long> {
 
     Page<Design> findDesignsByDesignerAndIsPublishedFalse(Designer designer, Pageable pageable);
 
-    Page<Design> findDesignsByDesignerAndIsAcceptedFalse(Designer designer,Pageable pageable);
-
-    Page<Design> findDesignsByDesignerAndIsAcceptedTrue(Designer designer,Pageable pageable);
+    Page<Design> findDesignsByDesignerAndStatus(Designer designer, DesignStatus status,Pageable pageable);
 
     Page<Design> findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(Designer designer,Pageable pageable);
 

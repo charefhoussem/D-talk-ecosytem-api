@@ -30,7 +30,7 @@ public interface DesignService {
 
     public Design createDesign(String name, double price,String description, MultipartFile imageFile, MultipartFile originFile,Long idDesigner,List<String> tagNames,List<String> fieldTitles) throws IOException;
     public Boolean acceptDesign(Long idDesign);
-    public Boolean disacceptDesign(Long idDesign);
+    public Boolean rejectedDesign(Long idDesign);
 
     public Boolean publishDesign(Long idDesign);
     public Boolean unpublishDesign(Long idDesign);
