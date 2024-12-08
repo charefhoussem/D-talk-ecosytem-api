@@ -1,15 +1,20 @@
 package com.dtalk.ecosystem.DTOs.request.design;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public interface DesignOrderSummaryProjection {
-    String getDesignName();
-    String getImagePath();
-    LocalDateTime getOrderDate();
-    LocalDate getCreationDate();
-    long getOrderCount();
-    int getTotalQuantity();
-    Double getPriceDesign();
-    double getTotalPrice();
+import java.time.LocalDate;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class DesignOrderSummaryProjection {
+    private String designName;
+    private String imagePath;
+    private LocalDate orderDate;
+    private LocalDate creationDate;
+    private long orderCount;
+    private long totalQuantity;
+    private Double priceDesign;
+    private double totalPrice;
 }

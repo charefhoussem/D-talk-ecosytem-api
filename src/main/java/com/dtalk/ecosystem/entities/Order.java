@@ -5,6 +5,7 @@ import com.dtalk.ecosystem.entities.users.Brand;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idOrder;
 
-    private LocalDateTime date = LocalDateTime.now();
+    private LocalDate date = LocalDate.now();
 
     private Boolean isValid = false;
 

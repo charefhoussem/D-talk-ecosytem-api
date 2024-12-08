@@ -1,8 +1,6 @@
 package com.dtalk.ecosystem.services.impl;
 
 import com.dtalk.ecosystem.DTOs.request.design.DesignOrderSummaryProjection;
-import com.dtalk.ecosystem.DTOs.request.design.RejectionReasonRequest;
-import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.DesignStatus;
 import com.dtalk.ecosystem.entities.FieldDesigner;
@@ -16,7 +14,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -199,8 +196,6 @@ public class DesignServiceImpl implements DesignService {
 
         Pageable pageable = PageRequest.of(page,size);
         return designRepository.getGroupedOrdersByDesigner(idDesigner,pageable);
-
-
     }
 
 

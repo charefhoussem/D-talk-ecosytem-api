@@ -1,7 +1,6 @@
 package com.dtalk.ecosystem.repositories;
 
 import com.dtalk.ecosystem.DTOs.request.design.DesignOrderSummaryProjection;
-import com.dtalk.ecosystem.DTOs.response.dashboard_Designer.CategorySalesDTO;
 import com.dtalk.ecosystem.DTOs.response.dashboard_Designer.TopSellingDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.DesignStatus;
@@ -13,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -27,15 +26,16 @@ public interface DesignRepository extends JpaRepository<Design,Long> {
     Page<Design> findDesignsByDesignerAndStatus(Designer designer, DesignStatus status,Pageable pageable);
 
     Page<Design> findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(Designer designer,Pageable pageable);
-    @Query(""" 
-    SELECT d.name AS designName,
-           d.imagePath AS imagePath,
-           o.date AS orderDate,
-           d.creationDate AS creationDate,
-           COUNT(o) AS orderCount,
-           SUM(o.quantity) AS totalQuantity,
-           d.price AS priceDesign,
-           d.price * totalQuantity AS totalPrice
+
+    @Query("""
+    SELECT new com.dtalk.ecosystem.DTOs.request.design.DesignOrderSummaryProjection( d.name,
+           d.imagePath,
+           o.date,
+           d.creationDate,
+           COUNT(o),
+           SUM(o.quantity),
+           d.price,
+           d.price * SUM(o.quantity))
     FROM Design d
     JOIN d.orders o
     WHERE d.designer.idUser = :idDesigner
@@ -63,10 +63,11 @@ public interface DesignRepository extends JpaRepository<Design,Long> {
     WHERE d.designer.idUser = :idDesigner AND o.date BETWEEN :start AND :end
     GROUP BY d.idDesign, d.name
     ORDER BY SUM(o.quantity) DESC
+    LIMIT :limit
     """)
     List<TopSellingDesignDTO> getTopSellingDesigns(@Param("idDesigner") Long idDesigner,
-                                                   @Param("start") Date start,
-                                                   @Param("end") Date end,
+                                                   @Param("start") LocalDate start,
+                                                   @Param("end") LocalDate end,
                                                    @Param("limit") int limit);
 
 
