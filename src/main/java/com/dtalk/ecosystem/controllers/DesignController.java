@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.controllers;
 
+import com.dtalk.ecosystem.DTOs.request.design.DesignOrderSummaryProjection;
 import com.dtalk.ecosystem.DTOs.request.design.RejectionReasonRequest;
 import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
@@ -95,11 +96,11 @@ public class DesignController {
 
     @PreAuthorize("hasRole('DESIGNER')")
     @GetMapping("/overview/{designerId}")
-    public ResponseEntity<Page<OrderedDesignDTO>> getDesignsOverview(
+    public ResponseEntity<Page<DesignOrderSummaryProjection>> getDesignsOverview(
             @PathVariable Long designerId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<OrderedDesignDTO> overview = designService.getOrderedDesignsByDesigner(designerId, page, size);
+        Page<DesignOrderSummaryProjection> overview = designService.getOrderedDesignsByDesigner(designerId, page, size);
         return ResponseEntity.ok(overview);
     }
 

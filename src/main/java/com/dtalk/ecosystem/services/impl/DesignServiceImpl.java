@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.services.impl;
 
+import com.dtalk.ecosystem.DTOs.request.design.DesignOrderSummaryProjection;
 import com.dtalk.ecosystem.DTOs.request.design.RejectionReasonRequest;
 import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
 import com.dtalk.ecosystem.entities.Design;
@@ -192,21 +193,13 @@ public class DesignServiceImpl implements DesignService {
     }
 
     @Override
-    public Page<OrderedDesignDTO> getOrderedDesignsByDesigner(Long idDesigner, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("order.date").descending()); // Trier par date de commande (descendant)
-        Page<Design> designs = designRepository.findOrderedDesignsByDesigner(idDesigner, pageable);
-        return designs.map(design -> new OrderedDesignDTO(
-                design.getImagePath(),
-                design.getName(),
-                design.getPrice(),
-                design.getOrders().size(),
-                design.getPrice() * design.getOrders().size(),
-                // je veux recuperer la date de la derniere order
-                design.getOrders().getDate(),
+    public Page<DesignOrderSummaryProjection> getOrderedDesignsByDesigner(Long idDesigner, int page, int size) {
+         designerRepository.findById(idDesigner)
+                 .orElseThrow(() -> new ResourceNotFoundException("designer not found with id: " + idDesigner));
 
+        Pageable pageable = PageRequest.of(page,size);
+        return designRepository.getGroupedOrdersByDesigner(idDesigner,pageable);
 
-                design.getCreationDate()
-        ));
 
     }
 

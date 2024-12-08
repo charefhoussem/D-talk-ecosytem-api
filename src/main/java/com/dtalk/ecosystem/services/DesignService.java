@@ -1,7 +1,7 @@
 package com.dtalk.ecosystem.services;
 
-import com.dtalk.ecosystem.DTOs.request.design.RejectionReasonRequest;
-import com.dtalk.ecosystem.DTOs.response.OrderedDesignDTO;
+import com.dtalk.ecosystem.DTOs.request.design.DesignOrderSummaryProjection;
+
 import com.dtalk.ecosystem.entities.Design;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +41,6 @@ public interface DesignService {
     public void deleteDesign(Long idDesign);
 
 
-    Page<OrderedDesignDTO> getOrderedDesignsByDesigner(Long idDesigner , int page , int size);
+    Page<DesignOrderSummaryProjection> getOrderedDesignsByDesigner(Long idDesigner , int page , int size);
 
 }

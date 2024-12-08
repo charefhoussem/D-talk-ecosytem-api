@@ -1,5 +1,6 @@
 package com.dtalk.ecosystem.repositories;
 
+import com.dtalk.ecosystem.DTOs.request.design.DesignOrderSummaryProjection;
 import com.dtalk.ecosystem.entities.Design;
 import com.dtalk.ecosystem.entities.DesignStatus;
 import com.dtalk.ecosystem.entities.users.Designer;
@@ -24,7 +25,22 @@ public interface DesignRepository extends JpaRepository<Design,Long> {
 
     Page<Design> findDesignsByDesignerAndIsAcceptedFalseAndIsPublishedFalse(Designer designer,Pageable pageable);
 
-    @Query("SELECT d FROM Design d JOIN d.order o WHERE d.designer.idUser = :designerId")
-    Page<Design> findOrderedDesignsByDesigner(@Param("designerId") Long designerId , Pageable pageable);
+
+    @Query(""" 
+    SELECT d.name AS designName,
+           d.imagePath AS imagePath,
+           o.date AS orderDate,
+           d.creationDate AS creationDate,
+           COUNT(o) AS orderCount,
+           SUM(o.quantity) AS totalQuantity,
+           d.price AS priceDesign,
+           d.price * totalQuantity AS totalPrice
+    FROM Design d
+    JOIN d.orders o
+    WHERE d.designer.idUser = :idDesigner
+    GROUP BY d.idDesign, d.name, d.imagePath, o.date
+    ORDER BY o.date DESC
+    """)
+    Page<DesignOrderSummaryProjection> getGroupedOrdersByDesigner(@Param("idDesigner") Long idDesigner, Pageable pageable);
 
 }
