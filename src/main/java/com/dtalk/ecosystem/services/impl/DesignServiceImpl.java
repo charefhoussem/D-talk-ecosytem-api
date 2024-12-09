@@ -10,7 +10,9 @@ import com.dtalk.ecosystem.exceptions.ResourceNotFoundException;
 import com.dtalk.ecosystem.repositories.*;
 import com.dtalk.ecosystem.services.DesignService;
 import com.dtalk.ecosystem.services.EmailService;
+import com.dtalk.ecosystem.utils.UniqueIdentifierUtil;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -31,6 +34,8 @@ public class DesignServiceImpl implements DesignService {
     private final EmailService emailService;
     private final DesignerRepository designerRepository;
     private FileStorageService fileStorageService;
+    private final BlobService blobService;
+
     @Override
     public Design getDesignById(Long idDesign) {
         return designRepository.findById(idDesign)
@@ -90,6 +95,7 @@ public class DesignServiceImpl implements DesignService {
     }
 
 
+    @SneakyThrows
     @Override
     public Design createDesign(String name, double price, String description, MultipartFile imageFile, MultipartFile originFile, Long idDesigner, List<String> tagNames,List<String> fieldTitles) throws IOException {
         Design design = new Design();
@@ -102,11 +108,14 @@ public class DesignServiceImpl implements DesignService {
         design.setCreationDate(date);
         Designer designer = designerRepository.findById(idDesigner).get();
         design.setDesigner(designer);
-        String imageFileName = fileStorageService.saveFile(imageFile);
-        design.setImagePath(imageFileName);
 
-        String originFileName = fileStorageService.saveFile(originFile);
-        design.setOriginFilePath(originFileName);
+        String regenrateImageName = UniqueIdentifierUtil.generateSecureIdentifier(imageFile.getOriginalFilename());
+        blobService.storeFile(regenrateImageName,imageFile.getInputStream(), imageFile.getSize());
+        design.setImagePath(regenrateImageName);
+
+        regenrateImageName =UniqueIdentifierUtil.generateSecureIdentifier(originFile.getOriginalFilename());
+        blobService.storeFile(regenrateImageName,originFile.getInputStream(), originFile.getSize());
+        design.setOriginFilePath(regenrateImageName);
 
         Set<Tag> tags = getOrCreateTags(tagNames);
         design.setTags(tags);
