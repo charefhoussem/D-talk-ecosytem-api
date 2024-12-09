@@ -93,7 +93,7 @@ public class DesignController {
 
     }
 
-   /* @PreAuthorize("hasRole('DESIGNER')")
+    @PreAuthorize("hasRole('DESIGNER')")
     @GetMapping("/overview/{designerId}")
     public ResponseEntity<Page<DesignOrderSummaryProjection>> getDesignsOverview(
             @PathVariable Long designerId,
@@ -101,7 +101,7 @@ public class DesignController {
             @RequestParam(defaultValue = "10") int size) {
         Page<DesignOrderSummaryProjection> overview = designService.getOrderedDesignsByDesigner(designerId, page, size);
         return ResponseEntity.ok(overview);
-    }*/
+    }
 
 
 
@@ -164,7 +164,7 @@ public class DesignController {
     public ResponseEntity<Object> disacceptDesign(@PathVariable("id") Long id, @RequestBody RejectionReasonRequest reasonRequest){
         Boolean disccept = designService.rejectedDesign(id,reasonRequest.getReason());
         if (disccept){
-            return    ResponseHandler.responseBuilder("design disccepted",HttpStatus.OK,null);
+            return    ResponseHandler.responseBuilder("design rejected",HttpStatus.OK,null);
         }else{
             return    ResponseHandler.responseBuilder("design not found",HttpStatus.NOT_FOUND,null);
         }

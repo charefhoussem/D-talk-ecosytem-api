@@ -31,7 +31,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private EtatOrder etat = EtatOrder.PROTOTYPING;
 
-    private int quantity = 0;
+    private int quantity = 1;
 
     @ManyToMany(cascade = CascadeType.ALL)
     private Set<FolderStyle> folderStyles = new HashSet<>();
